@@ -55,11 +55,11 @@ class Mapper(object):
         return [Mapper.get_mapper(type(item).__name__).to_dto(item) for item in obj]
 
     @staticmethod
-    def map_to_obj(dto: dict, entity_name: str) -> Optional[object]:
+    def map_to_obj(dto: dict, entity_name: str, loaded_object: object = None) -> Optional[object]:
         if not dto:
             return None
 
-        return Mapper.get_mapper(entity_name).to_object(dto)
+        return Mapper.get_mapper(entity_name).to_object(dto, loaded_object=loaded_object)
 
     @staticmethod
     def map_to_obj_from_list(dto_list: List[dict], entity_name: str) -> Optional[object]:

@@ -15,14 +15,16 @@ class UserMapper(MapperInterface):
             "created_at": user.created_at
         }
 
-    def to_object(self, user_dto: dict) -> User:
-        user = User()
+    def to_object(self, user_dto: dict, loaded_object: User = None) -> User:
+        user = loaded_object if loaded_object else User()
         user.id = user_dto.get("id")
         user.name = user_dto.get("name")
         user.login = user_dto.get("login")
         user.password = user_dto.get("password")
         user.user_group = None
-        user.created_at = user_dto.get("created_at")
+
+        if not loaded_object:
+            user.created_at = user_dto.get("created_at")
 
         return user
 

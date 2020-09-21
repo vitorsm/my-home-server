@@ -12,8 +12,8 @@ class UserGroupMapper(MapperInterface):
             "description": user_group.description
         }
 
-    def to_object(self, dto: dict) -> UserGroup:
-        user_group = UserGroup()
+    def to_object(self, dto: dict, loaded_object: UserGroup = None) -> UserGroup:
+        user_group = loaded_object if loaded_object else UserGroup()
         user_group.id = dto.get("id")
         user_group.name = dto.get("name")
         user_group.description = dto.get("description")

@@ -6,6 +6,7 @@ from my_home_server.models.base_models import Base
 
 
 class ProductType(Base):
+    __tablename__ = "product_type"
     id = Column(Integer, nullable=False, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)

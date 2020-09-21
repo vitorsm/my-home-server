@@ -19,16 +19,18 @@ class ProductMapper(MapperInterface):
             "image_url": obj.image_url
         }
 
-    def to_object(self, dto: dict) -> Product:
-        product = Product()
+    def to_object(self, dto: dict, loaded_object: Product = None) -> Product:
+        product = loaded_object if loaded_object else Product()
         product.id = dto.get("id")
         product.name = dto.get("name")
         product.image_url = dto.get("image_url")
         product.is_private = dto.get("is_private")
-        product.created_at = dto.get("created_at")
-        product.created_by = Mapper.map_to_obj(dto.get("created_by"), User.__name__)
         product.brand = Mapper.map_to_obj(dto.get("brand"), Brand.__name__)
         product.product_type = Mapper.map_to_obj(dto.get("product_type"), ProductType.__name__)
+
+        if not loaded_object:
+            product.created_at = dto.get("created_at")
+            product.created_by = Mapper.map_to_obj(dto.get("created_by"), User.__name__)
 
         return product
 

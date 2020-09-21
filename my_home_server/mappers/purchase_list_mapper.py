@@ -17,13 +17,15 @@ class PurchaseListMapper(MapperInterface):
             "purchase_products": self.__products_to_dto(obj.purchase_products)
         }
 
-    def to_object(self, dto: dict) -> PurchaseList:
-        purchase_list = PurchaseList()
+    def to_object(self, dto: dict, loaded_object: PurchaseList = None) -> PurchaseList:
+        purchase_list = loaded_object if loaded_object else PurchaseList()
         purchase_list.id = dto.get("id")
         purchase_list.name = dto.get("name")
-        purchase_list.created_by = Mapper.map_to_obj(dto.get("created_by"), User.__name__)
-        purchase_list.created_at = dto.get("created_at")
         purchase_list.purchase_products = self.__products_to_obj(dto.get("purchase_products"))
+
+        if not loaded_object:
+            purchase_list.created_by = Mapper.map_to_obj(dto.get("created_by"), User.__name__)
+            purchase_list.created_at = dto.get("created_at")
 
         return purchase_list
 

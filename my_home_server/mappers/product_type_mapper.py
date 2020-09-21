@@ -16,16 +16,18 @@ class ProductTypeMapper(MapperInterface):
             "created_at": obj.created_at
         }
 
-    def to_object(self, dto: dict) -> object:
-        product_type = ProductType()
+    def to_object(self, dto: dict, loaded_object: ProductType = None) -> object:
+        product_type = loaded_object if loaded_object else ProductType()
         product_type.id = dto.get("id")
         product_type.name = dto.get("name")
         product_type.parent_product_type = self.to_object(dto.get("parent_product_type")) \
             if dto.get("parent_product_type") else None
-        product_type.created_by = Mapper.map_to_obj(dto.get("created_by"), User.__name__)
         product_type.is_private = dto.get("is_private")
         product_type.description = dto.get("description")
-        product_type.created_at = dto.get("created_at")
+
+        if not loaded_object:
+            product_type.created_by = Mapper.map_to_obj(dto.get("created_by"), User.__name__)
+            product_type.created_at = dto.get("created_at")
 
         return product_type
 
