@@ -12,7 +12,8 @@ class Purchase(Base):
     name = Column(String, nullable=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     created_by = relationship("User", lazy="select")
-    purchase_list = relationship("PurchseList", lazy="select")
+    purchase_list = relationship("PurchaseList", lazy="select")
+    products = relationship("PurchaseProduct", lazy="select")
 
     def __eq__(self, other):
         return other and self.id == other.id

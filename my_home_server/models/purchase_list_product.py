@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from my_home_server.models.base_models import Base
 
 
-class ProductListProduct(Base):
+class PurchaseListProduct(Base):
     __tablename__ = "purchase_list_has_product"
     purchase_list_id = Column(Integer, ForeignKey("purchase_list.id"), primary_key=True, nullable=False)
     product_id = Column(Integer, ForeignKey("product.id"), primary_key=True, nullable=False)

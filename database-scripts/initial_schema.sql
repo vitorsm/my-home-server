@@ -45,6 +45,9 @@ create table product_type (
 create table brand (
     id int not null auto_increment,
     name VARCHAR(255) not null,
+    is_private tinyint not null default 1,
+    created_by int not null,
+    created_at timestamp not null default now(),
     primary key (id)
 );
 
