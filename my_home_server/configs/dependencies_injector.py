@@ -1,5 +1,5 @@
-
-from injector import Module, singleton
+from flask import Flask
+from injector import Module, singleton, Binder
 from flask_sqlalchemy import SQLAlchemy
 
 from my_home_server.dao.brand_dao import BrandDAO
@@ -19,28 +19,30 @@ from my_home_server.services.user_service import UserService
 
 class AppModule(Module):
 
-    def __init__(self, app):
+    def __init__(self, app: Flask, db: SQLAlchemy = None):
         self.app = app
+        self.db = db
 
-    def configure(self, binder):
-        db = SQLAlchemy(self.app)
+    def configure(self, binder: Binder):
+        if not self.db:
+            self.db = SQLAlchemy(self.app)
 
         dependencies = list()
 
-        brand_dao = BrandDAO(db)
+        brand_dao = BrandDAO(self.db)
         dependencies.append(brand_dao)
 
-        product_dao = ProductDAO(db)
+        product_dao = ProductDAO(self.db)
         dependencies.append(product_dao)
-        product_type_dao = ProductTypeDAO(db)
+        product_type_dao = ProductTypeDAO(self.db)
         dependencies.append(product_type_dao)
-        purchase_dao = PurchaseDAO(db)
+        purchase_dao = PurchaseDAO(self.db)
         dependencies.append(purchase_dao)
-        purchase_list_dao = PurchaseListDAO(db)
+        purchase_list_dao = PurchaseListDAO(self.db)
         dependencies.append(purchase_list_dao)
-        user_dao = UserDAO(db)
+        user_dao = UserDAO(self.db)
         dependencies.append(user_dao)
-        user_group_dao = UserGroupDAO(db)
+        user_group_dao = UserGroupDAO(self.db)
         dependencies.append(user_group_dao)
 
         brand_service = BrandService(brand_dao)

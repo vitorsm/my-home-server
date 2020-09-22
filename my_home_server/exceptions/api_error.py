@@ -1,17 +1,13 @@
 from dataclasses import dataclass
-from enum import Enum
+
 from typing import Optional
 
-
-class APIErrorCode(Enum):
-    UPDATE_USER_PERMISSION = 4002
-
-    GENERIC_EXCEPTION = 5001
+from my_home_server.exceptions.error_code import ErrorCode
 
 
 @dataclass
 class APIError(object):
-    error_code: APIErrorCode
+    error_code: ErrorCode
     title: Optional[str]
     message: str
 

@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-from my_home_server.exceptions.api_error import APIErrorCode
+from my_home_server.exceptions.error_code import ErrorCode
 
 
 class Actions(Enum):
@@ -12,7 +12,7 @@ class Actions(Enum):
 
 
 class PermissionException(Exception):
-    def __init__(self, error_code: APIErrorCode, entity: Optional[str], action: Optional[Actions]):
+    def __init__(self, error_code: ErrorCode, entity: Optional[str], action: Optional[Actions]):
         super().__init__(f"You don't have permission to {action.name if action else 'perform this action in'} this "
                          f"{entity if entity else 'object'}")
         self.entity = entity

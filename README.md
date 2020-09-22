@@ -17,6 +17,42 @@ sudo chmod 777 /var/log/myhome-server
 sudo chmod 777 /var/lib/myhome-server
 ```
 
+## Tests
+
+The tests are in the directory:
+``` 
+my_home_server/tests/
+```
+
+The tests are separated in two groups: unit tests and integration tests.
+The purpose of integration tests is to test the database integration.
+
+To execute all tests run the command:
+
+```
+python3 -m unittest discover -s my_home_server/tests/
+```
+
+#### Coverage
+
+To measure the test coverage you can use the coverage tool (https://coverage.readthedocs.io/).
+To install run the following command:
+
+```
+pip3 install coverage
+```
+
+Then, execute the analysis:
+
+```
+coverage run --branch --source=my_home_server --omit=my_home_server/tests/* -m unittest discover -s my_home_server/tests/
+```
+
+The analysis will generate a file that contains the coverage data. To print the coverage data run the following command:
+```
+coverage report -m
+```
+
 ## Security
 
 The Flask-JWT lib was used to guarantee that all endpoints will be accessed only for authorized users.

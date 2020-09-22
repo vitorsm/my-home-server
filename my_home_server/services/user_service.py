@@ -2,8 +2,9 @@ from datetime import datetime
 from typing import Optional
 
 from my_home_server.dao.user_dao import UserDAO
-from my_home_server.exceptions.api_error import APIErrorCode
 from my_home_server.exceptions.authentication_exception import AuthenticationException
+from my_home_server.exceptions.duplicate_entry_exception import DuplicateEntryException
+from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.exceptions.object_not_found import ObjectNotFoundException
 from my_home_server.exceptions.permission_exception import PermissionException, Actions
 from my_home_server.mappers.mapper import Mapper
@@ -38,7 +39,11 @@ class UserService(object):
         user.password = PasswordEncryption.encrypt_password(user.password)
         user.user_group = self.user_group_service.get_default_user_group()
 
-        self.user_dao.add(user)
+        try:
+            self.user_dao.add(user)
+        except DuplicateEntryException as exception:
+            exception.error_code = ErrorCode.USER_LOGIN_ALREADY_EXISTS
+            raise exception
 
         return user
 
@@ -48,7 +53,7 @@ class UserService(object):
         user = self.find_by_id(dto.get("id"))
 
         if user != AuthenticationContext.get_current_user():
-            raise PermissionException(APIErrorCode.UPDATE_USER_PERMISSION, User.__name__, Actions.UPDATE)
+            raise PermissionException(ErrorCode.UPDATE_USER_PERMISSION, User.__name__, Actions.UPDATE)
 
         if not user:
             raise ObjectNotFoundException(User.__name__, {"id": dto.get("id")})
