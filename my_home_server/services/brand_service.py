@@ -15,7 +15,7 @@ class BrandService(object):
         self.mapper = Mapper.get_mapper(Brand.__name__)
 
     def find_or_create(self, dto: dict) -> Optional[Brand]:
-        if not dto or dto.get("id"):
+        if not dto or not dto.get("id"):
             return None
 
         brand = self.find_by_id(dto.get("id"))

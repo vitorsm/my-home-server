@@ -17,12 +17,13 @@ class BrandMapper(MapperInterface):
         brand = loaded_object if loaded_object else Brand()
         brand.id = dto.get("id")
         brand.name = dto.get("name")
-        brand.is_private = dto.get("is_private")
 
         if not loaded_object:
             brand.created_at = dto.get("created_at")
-            brand.created_by = self.user_mapper.to_object(dto.get("created_by")) \
-                if not loaded_object else loaded_object.created_by
+            brand.created_by = self.user_mapper.to_object(dto.get("created_by"))
+            brand.is_private = dto.get("is_private")
+        else:
+            brand.is_private = dto.get("is_private") if dto.get("is_private") is not None else loaded_object.is_private
 
         return brand
 

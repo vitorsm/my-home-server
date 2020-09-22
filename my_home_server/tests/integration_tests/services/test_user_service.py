@@ -1,6 +1,7 @@
 from my_home_server.exceptions.authentication_exception import AuthenticationException
 from my_home_server.exceptions.duplicate_entry_exception import DuplicateEntryException
 from my_home_server.exceptions.error_code import ErrorCode
+from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
 from my_home_server.exceptions.object_not_found import ObjectNotFoundException
 from my_home_server.exceptions.permission_exception import PermissionException, Actions
 from my_home_server.models.user import User
@@ -15,6 +16,19 @@ class TestUserService(BaseTest):
     def setUp(self):
         super().setUp()
         self.service = self.dependency_injector.get(UserService)
+
+    def test_create_user_from_dto_without_name(self):
+        dto = {
+            "name": None,
+            "login": "testName",
+            "password": "12345"
+        }
+
+        with self.assertRaises(InvalidDTOException) as exception:
+            self.service.update_by_dto(dto)
+
+        self.assertEqual(["name"], exception.exception.required_fields)
+        self.assertEqual(User.__name__, exception.exception.entity_name)
 
     def test_create_user_from_dto(self):
         dto = {
@@ -76,6 +90,20 @@ class TestUserService(BaseTest):
             self.service.authenticate("login", invalid_password)
 
         self.assertEqual("login", exception.exception.login)
+
+    def test_update_user_by_dto_without_id(self):
+        dto = {
+            "id": 0,
+            "name": "new_name",
+            "login": "vitor",
+            "password": "new_pass"
+        }
+
+        with self.assertRaises(InvalidDTOException) as exception:
+            self.service.update_by_dto(dto)
+
+        self.assertEqual(["id"], exception.exception.required_fields)
+        self.assertEqual(User.__name__, exception.exception.entity_name)
 
     def test_update_user_by_dto_without_permission(self):
         dto = {

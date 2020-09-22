@@ -11,3 +11,4 @@ class InvalidDTOException(Exception):
                          f"{f'Required fields: {str(required_fields)}' if required_fields else 'Null object'}")
         self.required_fields = required_fields
         self.parent_exception = parent_exception
+        self.entity_name = entity_name

@@ -13,7 +13,6 @@ from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.security.password_encryption import PasswordEncryption
 
 
-
 class BaseTest(TestCase):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     TESTING = True
@@ -34,8 +33,6 @@ class BaseTest(TestCase):
         self.dependency_injector = Injector([AppModule(self.app, self.db)])
         FlaskInjector(app=self.app, injector=self.dependency_injector)
 
-        AuthenticationContext.init_context(self.__get_default_user())
-
         return self.app
 
     def setUp(self):
@@ -46,6 +43,8 @@ class BaseTest(TestCase):
         self.db.session.add(default_user)
         self.initial_load()
         self.db.session.commit()
+
+        AuthenticationContext.init_context(default_user)
 
     def initial_load(self):
         file_path = BaseTest.get_current_dir() + "/my_home_server/tests/resources/initial_load.sql"
