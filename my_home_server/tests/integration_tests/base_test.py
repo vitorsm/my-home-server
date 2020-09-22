@@ -51,7 +51,8 @@ class BaseTest(TestCase):
         file_path = BaseTest.get_current_dir() + "/my_home_server/tests/resources/initial_load.sql"
         file = open(file_path)
         for query in file.read().split(";"):
-            self.db.session.execute(query)
+            if query.strip():
+                self.db.session.execute(query.strip())
         file.close()
 
     def tearDown(self):

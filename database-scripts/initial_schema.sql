@@ -35,21 +35,21 @@ create table product_type (
     description varchar(255) null default null,
     parent_product_type_id int null,
     is_private tinyint not null default 1,
-    created_by int not null,
+    created_by_id int not null,
     created_at timestamp not null default now(),
     primary key (id),
     foreign key (parent_product_type_id) references product_type(id),
-    foreign key (created_by) references user(id)
+    foreign key (created_by_id) references user(id)
 );
 
 create table brand (
     id int not null auto_increment,
     name VARCHAR(255) not null,
     is_private tinyint not null default 1,
-    created_by int not null,
+    created_by_id int not null,
     created_at timestamp not null default now(),
     primary key (id),
-    foreign key (created_by) references user(id)
+    foreign key (created_by_id) references user(id)
 );
 
 create table product (
@@ -57,12 +57,12 @@ create table product (
     name varchar(255) not null,
     product_type_id int null,
     brand_id int null,
-    created_by int not null,
+    created_by_id int not null,
     created_at timestamp not null default now(),
     is_private tinyint not null default 1,
     image_url varchar(255) null default null,
     primary key (id),
-    foreign key (created_by) references user(id),
+    foreign key (created_by_id) references user(id),
     foreign key (product_type_id) references product_type(id),
     foreign key (brand_id) references brand(id)
 );
@@ -70,10 +70,10 @@ create table product (
 create table purchase_list (
     id int not null auto_increment,
     name varchar(255) not null,
-    created_by int not null,
+    created_by_id int not null,
     created_at timestamp not null default now(),
     primary key (id),
-    foreign key (created_by) references user(id)
+    foreign key (created_by_id) references user(id)
 );
 
 create table purchase_list_has_product (
@@ -90,10 +90,10 @@ create table purchase (
     id int not null auto_increment,
     purchase_list_id int null,
     name varchar(255) null,
-    created_by int not null,
+    created_by_id int not null,
     created_at timestamp not null default now(),
     primary key (id),
-    foreign key (created_by) references user(id),
+    foreign key (created_by_id) references user(id),
     foreign key (purchase_list_id) references purchase_list(id)
 );
 
