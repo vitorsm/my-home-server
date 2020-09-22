@@ -67,18 +67,3 @@ class Mapper(object):
             return None
 
         return [Mapper.get_mapper(entity_name).to_object(dto) for dto in dto_list]
-
-    @staticmethod
-    def validate_dto(dto: dict, required_fields: List[str], entity_name: str):
-        if not dto:
-            raise InvalidDTOException(entity_name, None)
-
-        if required_fields:
-            invalid_fields = list()
-
-            for field_name, value in dto.items():
-                if field_name in required_fields and not value:
-                    invalid_fields.append(field_name)
-
-            if len(invalid_fields):
-                raise InvalidDTOException(entity_name, invalid_fields)

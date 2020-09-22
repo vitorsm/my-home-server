@@ -1,22 +1,33 @@
-from my_home_server.mappers.mapper import Mapper
+from typing import Optional
+
 from my_home_server.mappers.mapper_interface import MapperInterface
+from my_home_server.mappers.user_mapper import UserMapper
 from my_home_server.models.product_type import ProductType
-from my_home_server.models.user import User
 
 
 class ProductTypeMapper(MapperInterface):
-    def to_dto(self, obj: ProductType) -> dict:
+
+    def __init__(self):
+        self.user_mapper = UserMapper()
+
+    def to_dto(self, obj: ProductType) -> Optional[dict]:
+        if not obj:
+            return None
+
         return {
             "id": obj.id,
             "name": obj.name,
             "description": obj.description,
             "parent_product_type": self.to_dto(obj.parent_product_type) if obj.parent_product_type else None,
             "is_private": obj.is_private,
-            "created_by": Mapper.map_to_dto(obj.created_by),
+            "created_by": self.user_mapper.to_dto(obj.created_by),
             "created_at": obj.created_at
         }
 
-    def to_object(self, dto: dict, loaded_object: ProductType = None) -> object:
+    def to_object(self, dto: dict, loaded_object: ProductType = None) -> Optional[object]:
+        if not dto:
+            return None
+
         product_type = loaded_object if loaded_object else ProductType()
         product_type.id = dto.get("id")
         product_type.name = dto.get("name")
@@ -26,10 +37,10 @@ class ProductTypeMapper(MapperInterface):
         product_type.description = dto.get("description")
 
         if not loaded_object:
-            product_type.created_by = Mapper.map_to_obj(dto.get("created_by"), User.__name__)
+            product_type.created_by = self.user_mapper.to_object(dto.get("created_by"))
             product_type.created_at = dto.get("created_at")
 
         return product_type
 
     def validate_dto(self, dto: dict):
-        Mapper.validate_dto(dto, ["name"], ProductType.__name__)
+        self.generic_validate_dto(dto, ["name"], ProductType.__name__)

@@ -11,9 +11,9 @@ from my_home_server.security.authentication_context import AuthenticationContext
 
 
 class BrandService(object):
-    brand_dao: BrandDAO
 
-    def __init__(self):
+    def __init__(self, brand_dao: BrandDAO):
+        self.brand_dao = brand_dao
         self.mapper = Mapper.get_mapper(Brand.__name__)
 
     def find_or_create(self, dto: dict) -> Optional[Brand]:

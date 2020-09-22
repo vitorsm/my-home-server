@@ -10,11 +10,10 @@ from my_home_server.services.product_type_service import ProductTypeService
 
 
 class ProductService(object):
-    product_dao: ProductDAO
-    brand_service: BrandService
-    product_type_service: ProductTypeService
-
-    def __init__(self):
+    def __init__(self, product_dao: ProductDAO, brand_service: BrandService, product_type_service: ProductTypeService):
+        self.product_dao = product_dao
+        self.brand_service = brand_service
+        self.product_type_service = product_type_service
         self.mapper = Mapper.get_mapper(Product.__name__)
 
     def create_by_dto(self, dto: dict):

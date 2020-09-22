@@ -1,11 +1,15 @@
-from my_home_server.mappers.mapper import Mapper
+from typing import Optional
+
 from my_home_server.mappers.mapper_interface import MapperInterface
 from my_home_server.models.user import User
 
 
 class UserMapper(MapperInterface):
 
-    def to_dto(self, user: User) -> dict:
+    def to_dto(self, user: User) -> Optional[dict]:
+        if not user:
+            return None
+
         return {
             "id": user.id,
             "name": user.name,
@@ -15,13 +19,15 @@ class UserMapper(MapperInterface):
             "created_at": user.created_at
         }
 
-    def to_object(self, user_dto: dict, loaded_object: User = None) -> User:
+    def to_object(self, user_dto: dict, loaded_object: User = None) -> Optional[User]:
+        if not user_dto:
+            return None
+
         user = loaded_object if loaded_object else User()
         user.id = user_dto.get("id")
         user.name = user_dto.get("name")
         user.login = user_dto.get("login")
-        user.password = user_dto.get("password")
-        user.user_group = None
+        user.password = user_dto.get("password") if not loaded_object else None
 
         if not loaded_object:
             user.created_at = user_dto.get("created_at")
@@ -29,4 +35,4 @@ class UserMapper(MapperInterface):
         return user
 
     def validate_dto(self, dto: dict):
-        Mapper.validate_dto(dto, ["name", "login", "password"], User.__name__)
+        self.generic_validate_dto(dto, ["name", "login", "password"], User.__name__)

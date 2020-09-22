@@ -21,7 +21,7 @@ create table user_group (
 create table user (
     id int not null auto_increment,
     name varchar(255) not null,
-    login varchar(255) not null,
+    login varchar(255) not null unique,
     password varchar(255) not null,
     user_group_id int not null,
     created_at timestamp not null default now(),
@@ -48,7 +48,8 @@ create table brand (
     is_private tinyint not null default 1,
     created_by int not null,
     created_at timestamp not null default now(),
-    primary key (id)
+    primary key (id),
+    foreign key (created_by) references user(id)
 );
 
 create table product (

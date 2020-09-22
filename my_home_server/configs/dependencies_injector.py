@@ -1,4 +1,3 @@
-import inspect
 
 from injector import Module, singleton
 from flask_sqlalchemy import SQLAlchemy
@@ -19,31 +18,43 @@ from my_home_server.services.user_service import UserService
 
 
 class AppModule(Module):
+
     def __init__(self, app):
         self.app = app
-
-    @staticmethod
-    def get_dependencies_instances(db) -> list:
-        return [
-            BrandDAO(db),
-            ProductDAO(db),
-            ProductTypeDAO(db),
-            PurchaseDAO(db),
-            PurchaseListDAO(db),
-            UserDAO(db),
-            UserGroupDAO(db),
-            BrandService(),
-            ProductService(),
-            ProductTypeService(),
-            PurchaseListService(),
-            UserGroupService(),
-            UserService()
-        ]
 
     def configure(self, binder):
         db = SQLAlchemy(self.app)
 
-        instances = self.get_dependencies_instances(db)
+        dependencies = list()
 
-        for instance in instances:
+        brand_dao = BrandDAO(db)
+        dependencies.append(brand_dao)
+
+        product_dao = ProductDAO(db)
+        dependencies.append(product_dao)
+        product_type_dao = ProductTypeDAO(db)
+        dependencies.append(product_type_dao)
+        purchase_dao = PurchaseDAO(db)
+        dependencies.append(purchase_dao)
+        purchase_list_dao = PurchaseListDAO(db)
+        dependencies.append(purchase_list_dao)
+        user_dao = UserDAO(db)
+        dependencies.append(user_dao)
+        user_group_dao = UserGroupDAO(db)
+        dependencies.append(user_group_dao)
+
+        brand_service = BrandService(brand_dao)
+        dependencies.append(brand_service)
+        product_type_service = ProductTypeService(product_type_dao)
+        dependencies.append(product_type_service)
+        product_service = ProductService(product_dao, brand_service, product_type_service)
+        dependencies.append(product_service)
+        purchase_list_service = PurchaseListService(purchase_list_dao, product_service)
+        dependencies.append(purchase_list_service)
+        user_group_service = UserGroupService(user_group_dao)
+        dependencies.append(user_group_service)
+        user_service = UserService(user_dao, user_group_service)
+        dependencies.append(user_service)
+
+        for instance in dependencies:
             binder.bind(type(instance), to=instance, scope=singleton)

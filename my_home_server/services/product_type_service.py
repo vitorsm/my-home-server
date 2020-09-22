@@ -9,9 +9,8 @@ from my_home_server.security.authentication_context import AuthenticationContext
 
 
 class ProductTypeService(object):
-    product_type_dao: ProductTypeDAO
-
-    def __init__(self):
+    def __init__(self, product_type_dao: ProductTypeDAO):
+        self.product_type_dao = product_type_dao
         self.mapper = Mapper.get_mapper(ProductType.__name__)
 
     def create_by_dto(self, dto: dict):

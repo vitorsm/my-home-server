@@ -10,10 +10,9 @@ from my_home_server.services.product_service import ProductService
 
 
 class PurchaseListService(object):
-    purchase_list_dao: PurchaseListDAO
-    product_service: ProductService
-
-    def __init__(self):
+    def __init__(self, purchase_list_dao: PurchaseListDAO, product_service: ProductService):
+        self.purchase_list_dao = purchase_list_dao
+        self.product_service = product_service
         self.mapper = Mapper.get_mapper(PurchaseList.__name__)
 
     def find_by_id(self, purchase_list_id: int) -> Optional[PurchaseList]:
