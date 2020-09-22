@@ -32,7 +32,7 @@ class UserService(object):
         return user
 
     def create_by_dto(self, dto: dict):
-        self.mapper.validate_dto(dto)
+        self.mapper.validate_dto_to_insert(dto)
 
         user = self.mapper.to_object(dto)
         user.created_at = datetime.utcnow()
@@ -48,15 +48,15 @@ class UserService(object):
         return user
 
     def update_by_dto(self, dto: dict):
-        self.mapper.validate_dto(dto)
+        self.mapper.validate_dto_to_update(dto)
 
         user = self.find_by_id(dto.get("id"))
 
-        if user != AuthenticationContext.get_current_user():
-            raise PermissionException(ErrorCode.UPDATE_USER_PERMISSION, User.__name__, Actions.UPDATE)
-
         if not user:
             raise ObjectNotFoundException(User.__name__, {"id": dto.get("id")})
+
+        if user != AuthenticationContext.get_current_user():
+            raise PermissionException(ErrorCode.UPDATE_USER_PERMISSION, User.__name__, Actions.UPDATE)
 
         user = self.mapper.to_object(dto, user)
 

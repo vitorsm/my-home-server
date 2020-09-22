@@ -17,7 +17,7 @@ class ProductService(object):
         self.mapper = Mapper.get_mapper(Product.__name__)
 
     def create_by_dto(self, dto: dict):
-        self.mapper.validate_dto(dto)
+        self.mapper.validate_dto_to_insert(dto)
 
         product = self.mapper.to_object(dto)
         product.created_at = datetime.utcnow()
@@ -28,7 +28,7 @@ class ProductService(object):
         return product
 
     def update_by_dto(self, dto: dict):
-        self.mapper.validate_dto(dto)
+        self.mapper.validate_dto_to_update(dto)
 
         product = self.product_dao.find_by_id(dto.get("id"), AuthenticationContext.get_current_user())
 

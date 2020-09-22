@@ -48,8 +48,11 @@ class BaseTest(TestCase):
         self.db.session.commit()
 
     def initial_load(self):
-        for query in open(BaseTest.get_current_dir() + "/resources/initial_load.sql").read().split(";"):
+        file_path = BaseTest.get_current_dir() + "/my_home_server/tests/resources/initial_load.sql"
+        file = open(file_path)
+        for query in file.read().split(";"):
             self.db.session.execute(query)
+        file.close()
 
     def tearDown(self):
         self.db.session.remove()
@@ -79,6 +82,6 @@ class BaseTest(TestCase):
         path = os.getcwd()
         if "my_home_server/tests" in path:
             index = path.index("my_home_server/tests")
-            path = path[:index + 20]
+            path = path[:index]
 
-        return path
+        return path if path.endswith("/") else path + "/"

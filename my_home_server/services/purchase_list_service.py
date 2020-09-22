@@ -19,7 +19,7 @@ class PurchaseListService(object):
         return self.purchase_list_dao.find_by_id(purchase_list_id, AuthenticationContext.get_current_user())
 
     def create_by_dto(self, dto: dict):
-        self.mapper.validate_dto(dto)
+        self.mapper.validate_dto_to_insert(dto)
 
         purchase_list = self.mapper.to_object(dto)
         purchase_list.created_at = datetime.utcnow()
@@ -30,7 +30,7 @@ class PurchaseListService(object):
         return purchase_list
 
     def update_by_dto(self, dto: dict):
-        self.mapper.validate_dto(dto)
+        self.mapper.validate_dto_to_update(dto)
 
         purchase_list = self.find_by_id(dto.get("id"))
 

@@ -46,5 +46,11 @@ class ProductMapper(MapperInterface):
 
         return product
 
-    def validate_dto(self, dto: dict):
-        self.generic_validate_dto(dto, ["name"], Product.__name__)
+    def get_required_fields_to_insert(self):
+        return ["name"]
+
+    def get_required_fields_to_update(self):
+        return ["id", "name"]
+
+    def get_entity_name(self):
+        return Product.__name__

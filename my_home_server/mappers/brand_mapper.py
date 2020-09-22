@@ -26,8 +26,14 @@ class BrandMapper(MapperInterface):
 
         return brand
 
-    def validate_dto(self, dto: dict):
-        self.generic_validate_dto(dto, ["name"], Brand.__name__)
+    def get_required_fields_to_insert(self):
+        return ["name"]
+
+    def get_required_fields_to_update(self):
+        return ["id", "name"]
+
+    def get_entity_name(self):
+        return Brand.__name__
 
     def to_dto(self, brand: Brand) -> Optional[dict]:
         if not brand:

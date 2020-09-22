@@ -18,9 +18,24 @@ class MapperInterface(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+    def validate_dto_to_insert(self, dto: dict):
+        self.generic_validate_dto(dto, self.get_required_fields_to_insert(), self.get_entity_name())
+
+    def validate_dto_to_update(self, dto: dict):
+        self.generic_validate_dto(dto, self.get_required_fields_to_update(), self.get_entity_name())
+
     @abc.abstractmethod
-    def validate_dto(self, dto: dict):
-        """Validate required fields and type of fields from dto"""
+    def get_entity_name(self):
+        """Entity name. Is used to show an error"""
+
+    @abc.abstractmethod
+    def get_required_fields_to_insert(self):
+        """The dto fields that are required to insert a object"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_required_fields_to_update(self):
+        """The dto fields that are required to update a object"""
         raise NotImplementedError
 
     def generic_validate_dto(self, dto: dict, required_fields: List[str], entity_name: str):

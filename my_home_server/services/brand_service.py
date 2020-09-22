@@ -1,8 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
 
-from injector import inject
-
 from my_home_server.dao.brand_dao import BrandDAO
 from my_home_server.exceptions.object_not_found import ObjectNotFoundException
 from my_home_server.mappers.mapper import Mapper
@@ -34,7 +32,7 @@ class BrandService(object):
         return self.brand_dao.find_all(AuthenticationContext.get_current_user())
 
     def create_by_dto(self, dto: dict):
-        self.mapper.validate_dto(dto)
+        self.mapper.validate_dto_to_insert(dto)
 
         brand = self.mapper.to_object(dto)
         brand.created_at = datetime.utcnow()
@@ -45,7 +43,7 @@ class BrandService(object):
         return brand
 
     def update_by_dto(self, dto: dict):
-        self.mapper.validate_dto(dto)
+        self.mapper.validate_dto_to_update(dto)
 
         brand = self.brand_dao.find_by_id(dto.get("id"), AuthenticationContext.get_current_user())
 

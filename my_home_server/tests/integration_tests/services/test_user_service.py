@@ -1,6 +1,7 @@
 from my_home_server.exceptions.authentication_exception import AuthenticationException
 from my_home_server.exceptions.duplicate_entry_exception import DuplicateEntryException
 from my_home_server.exceptions.error_code import ErrorCode
+from my_home_server.exceptions.object_not_found import ObjectNotFoundException
 from my_home_server.exceptions.permission_exception import PermissionException, Actions
 from my_home_server.models.user import User
 from my_home_server.security.authentication_context import AuthenticationContext
@@ -90,7 +91,26 @@ class TestUserService(BaseTest):
         self.assertEqual(Actions.UPDATE, exception.exception.action)
         self.assertEqual(User.__name__, exception.exception.entity)
 
-    def test_update_user_by_dto(self):
+    def test_update_user_by_dto_invalid_id(self):
+        dto = {
+            "id": 290,
+            "name": "new_name",
+            "login": "vitor",
+            "password": "new_pass"
+        }
+
+        user = User()
+        user.id = 290
+
+        AuthenticationContext.init_context(user)
+
+        with self.assertRaises(ObjectNotFoundException) as exception:
+            self.service.update_by_dto(dto)
+
+        self.assertEqual({"id": 290}, exception.exception.entity_identifier)
+        self.assertEqual(User.__name__, exception.exception.entity_name)
+
+    def test_update_pass_and_name_user_by_dto(self):
         dto = {
             "id": 2,
             "name": "new_name",
@@ -107,3 +127,20 @@ class TestUserService(BaseTest):
 
         self.assertEqual("new_name", user.name)
         self.assertTrue(PasswordEncryption.check_encrypted_password("new_pass", user.password))
+
+    def test_update_name_user_by_dto(self):
+        dto = {
+            "id": 2,
+            "name": "new_name",
+            "login": "vitor",
+            "password": None
+        }
+
+        user = self.service.find_by_id(2)
+        AuthenticationContext.init_context(user)
+
+        self.service.update_by_dto(dto)
+
+        user = self.service.find_by_id(2)
+
+        self.assertEqual("new_name", user.name)

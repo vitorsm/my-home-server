@@ -39,8 +39,14 @@ class PurchaseListMapper(MapperInterface):
 
         return purchase_list
 
-    def validate_dto(self, dto: dict):
-        self.generic_validate_dto(dto, ["name", "purchase_products"], PurchaseList.__name__)
+    def get_required_fields_to_insert(self):
+        return ["name"]
+
+    def get_required_fields_to_update(self):
+        return ["id", "name"]
+
+    def get_entity_name(self):
+        return PurchaseList.__name__
 
     def __products_to_obj(self, purchase_products_dto: List[dict]) -> List[PurchaseListProduct]:
         products = list()

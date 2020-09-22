@@ -27,12 +27,18 @@ class UserMapper(MapperInterface):
         user.id = user_dto.get("id")
         user.name = user_dto.get("name")
         user.login = user_dto.get("login")
-        user.password = user_dto.get("password") if not loaded_object else None
 
         if not loaded_object:
             user.created_at = user_dto.get("created_at")
+            user.password = user_dto.get("password")
 
         return user
 
-    def validate_dto(self, dto: dict):
-        self.generic_validate_dto(dto, ["name", "login", "password"], User.__name__)
+    def get_required_fields_to_insert(self):
+        return ["name", "login", "password"]
+
+    def get_required_fields_to_update(self):
+        return ["id", "login", "name"]
+
+    def get_entity_name(self):
+        return User.__name__
