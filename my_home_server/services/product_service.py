@@ -43,7 +43,7 @@ class ProductService(object):
         self.product_dao.commit()
 
     def delete_by_id(self, product_id: int):
-        product = self.product_dao.find_by_id(product_id)
+        product = self.product_dao.find_by_id(product_id, AuthenticationContext.get_current_user())
 
         if not product:
             raise ObjectNotFoundException(Product.__name__, {"id": product_id})

@@ -25,7 +25,7 @@ class AppModule(Module):
 
     def configure(self, binder: Binder):
         if not self.db:
-            self.db = SQLAlchemy(self.app)
+            self.db = SQLAlchemy(self.app, session_options={"autoflush": False})
 
         dependencies = list()
 

@@ -45,8 +45,8 @@ class MapperInterface(metaclass=abc.ABCMeta):
         if required_fields:
             invalid_fields = list()
 
-            for field_name, value in dto.items():
-                if field_name in required_fields and not value:
+            for field_name in required_fields:
+                if not dto.get(field_name):
                     invalid_fields.append(field_name)
 
             if len(invalid_fields):

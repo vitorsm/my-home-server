@@ -33,12 +33,15 @@ class ProductTypeMapper(MapperInterface):
         product_type.name = dto.get("name")
         product_type.parent_product_type = self.to_object(dto.get("parent_product_type")) \
             if dto.get("parent_product_type") else None
-        product_type.is_private = dto.get("is_private")
         product_type.description = dto.get("description")
 
         if not loaded_object:
             product_type.created_by = self.user_mapper.to_object(dto.get("created_by"))
             product_type.created_at = dto.get("created_at")
+            product_type.is_private = dto.get("is_private")
+        else:
+            product_type.is_private = dto.get("is_private") if dto.get("is_private") is not None else \
+                loaded_object.is_private
 
         return product_type
 

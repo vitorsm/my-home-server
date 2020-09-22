@@ -28,7 +28,7 @@ class BaseTest(TestCase):
         self.app.config['SECRET_KEY'] = self.ENCRYPT_SECRET_KEY
         self.app.config['JWT_AUTH_URL_RULE'] = "/api/auth/authenticate"
 
-        self.db = SQLAlchemy(self.app)
+        self.db = SQLAlchemy(self.app, session_options={"autoflush": False})
 
         self.dependency_injector = Injector([AppModule(self.app, self.db)])
         FlaskInjector(app=self.app, injector=self.dependency_injector)

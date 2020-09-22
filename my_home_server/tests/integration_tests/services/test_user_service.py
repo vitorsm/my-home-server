@@ -25,7 +25,7 @@ class TestUserService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.create_by_dto(dto)
 
         self.assertEqual(["name"], exception.exception.required_fields)
         self.assertEqual(User.__name__, exception.exception.entity_name)

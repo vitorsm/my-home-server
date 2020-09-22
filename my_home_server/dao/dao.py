@@ -3,12 +3,16 @@ from sqlalchemy.exc import IntegrityError
 from my_home_server.exceptions.duplicate_entry_exception import DuplicateEntryException
 import my_home_server.utils.sql_utils as sql_utils
 
+
 class DAO(object):
     def __init__(self, db):
         self.db = db
 
     def commit(self):
         self.db.session.commit()
+
+    def expunge(self, entity: object):
+        self.db.session.expunge(entity)
 
     def add(self, entity: object, commit: bool = True):
         self.db.session.add(entity)

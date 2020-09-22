@@ -105,12 +105,13 @@ class TestBrandService(BaseTest):
     def test_find_or_create_not_creating(self):
         dto = {
             "id": 100,
-            "name": "new_name"
+            "name": "other"
         }
 
         brand = self.service.find_or_create(dto)
 
         self.assertEqual(100, brand.id)
+        self.assertNotEqual("other", brand.name)
 
     def test_find_all(self):
         user = self.db.session.query(User).get(3)
