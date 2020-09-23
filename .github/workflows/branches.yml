@@ -1,0 +1,21 @@
+name: DEV Branches CI
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare repo
+        uses: actions/checkout@master
+      - name: Test
+        uses: vitorsm/python-test-action@master
+        with:
+          deps_list: 'requirements.txt'
+          path: './'
+          test_dir: 'my_home_server/tests/'
+          pattern: 'test_*.py'
+          python_path: './'
