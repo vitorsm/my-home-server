@@ -3,7 +3,8 @@ insert into user (id, name, login, password, user_group_id, created_at) values
 (2, 'Vitor', 'vitor', '$2b$12$buSIlMGMp8F/bB.gN/OfquPD1MQDqBeEi0Fxq5J6Qd4EypsabFh.e', 1, '2020-09-22 19:56:28.757876'),
 (3, 'User 3', 'user3', '$2b$12$61JKNlydwEJYEBXZH1j6suJD2QEnyQS2PY3BSyDxmKLt/uuDouuU.', 2, '2020-09-22 19:56:28.757876'), -- password: pass3
 (4, 'User 4', 'user4', '$2b$12$buSIlMGMp8F/bB.gN/OfquPD1MQDqBeEi0Fxq5J6Qd4EypsabFh.e', 3, '2020-09-22 19:56:28.757876'),
-(5, 'User 5', 'user5', '$2b$12$buSIlMGMp8F/bB.gN/OfquPD1MQDqBeEi0Fxq5J6Qd4EypsabFh.e', 3, '2020-09-22 19:56:28.757876');
+(5, 'User 5', 'user5', '$2b$12$buSIlMGMp8F/bB.gN/OfquPD1MQDqBeEi0Fxq5J6Qd4EypsabFh.e', 3, '2020-09-22 19:56:28.757876'),
+(6, 'User 6', 'user6', '$2b$12$buSIlMGMp8F/bB.gN/OfquPD1MQDqBeEi0Fxq5J6Qd4EypsabFh.e', 3, '2020-09-22 19:56:28.757876');
 
 
 insert into brand (id, name, is_private, created_by_id, created_at) values
@@ -43,6 +44,7 @@ insert into product (id, name, product_type_id, brand_id, created_by_id, created
 (4, 'Product 4', 8, 108, 1, '2020-09-22 19:56:28.757876', 0, null),
 (40, 'Product 40', 8, 108, 1, '2020-09-22 19:56:28.757876', 1, null),
 (5, 'Product 5', null, null, 1, '2020-09-22 19:56:28.757876', 0, null),
+(17, 'Product 17', null, null, 6, '2020-09-22 19:56:28.757876', 1, null),
 
 -- to use in purchase_list_test
 (6, 'Product 6', null, null, 1, '2020-09-22 19:56:28.757876', 1, null),

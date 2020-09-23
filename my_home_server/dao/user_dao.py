@@ -10,9 +10,3 @@ class UserDAO(DAO):
 
     def find_by_login(self, login: str) -> Optional[User]:
         return self.db.session.query(User).filter(User.login == login).first()
-
-    def insert_user(self, user: User) -> User:
-        self.db.session.add(user)
-        self.commit()
-
-        return user

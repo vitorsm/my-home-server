@@ -1,6 +1,8 @@
 from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
 from my_home_server.exceptions.object_not_found import ObjectNotFoundException
 from my_home_server.models.product import Product
+from my_home_server.models.user import User
+from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.services.product_service import ProductService
 from my_home_server.tests.integration_tests.base_test import BaseTest
 
@@ -15,6 +17,12 @@ class TestProductService(BaseTest):
 
     def test_find_product_by_id_without_permission(self):
         self.assertIsNone(self.service.find_by_id(2))
+
+    def test_find_all(self):
+        AuthenticationContext.init_context(self.db.session.query(User).get(6))
+        products = self.service.find_all()
+
+        self.assertEqual(11, len(products))
 
     def test_find_product_by_id(self):
         product = self.service.find_by_id(1)

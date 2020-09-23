@@ -11,7 +11,7 @@ from my_home_server.models.user import User
 class ProductDAO(DAO):
     def find_all(self, current_user: User) -> List[Product]:
         return self.db.session.query(Product).\
-            filter(Product.created_by == current_user).filter(Product.is_private == false()).all()
+            filter(or_(Product.created_by == current_user, Product.is_private == false())).all()
 
     def find_by_id(self, product_id: int, current_user: User) -> Optional[Product]:
         return self.db.session.query(Product).\

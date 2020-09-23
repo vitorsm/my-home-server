@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
-from my_home_server.exceptions.no_mapper import NoMapper
+from my_home_server.exceptions.no_mapper import NoMapperException
 from my_home_server.mappers.brand_mapper import BrandMapper
 from my_home_server.mappers.mapper_interface import MapperInterface
 from my_home_server.mappers.product_mapper import ProductMapper
@@ -36,34 +36,6 @@ class Mapper(object):
         mapper = Mapper.mappers.get(entity_name)
 
         if not mapper:
-            raise NoMapper(entity_name)
+            raise NoMapperException(entity_name)
 
         return mapper
-
-    @staticmethod
-    def map_to_dto(obj) -> Optional[dict]:
-        if not obj:
-            return None
-
-        return Mapper.get_mapper(type(obj).__name__).to_dto(obj)
-
-    @staticmethod
-    def map_to_dto_from_list(obj: list) -> Optional[list]:
-        if not obj:
-            return None
-
-        return [Mapper.get_mapper(type(item).__name__).to_dto(item) for item in obj]
-
-    @staticmethod
-    def map_to_obj(dto: dict, entity_name: str, loaded_object: object = None) -> Optional[object]:
-        if not dto:
-            return None
-
-        return Mapper.get_mapper(entity_name).to_object(dto, loaded_object=loaded_object)
-
-    @staticmethod
-    def map_to_obj_from_list(dto_list: List[dict], entity_name: str) -> Optional[object]:
-        if not dto_list:
-            return None
-
-        return [Mapper.get_mapper(entity_name).to_object(dto) for dto in dto_list]

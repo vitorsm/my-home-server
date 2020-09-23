@@ -91,6 +91,9 @@ class ProductService(object):
     def find_by_id(self, product_id: int) -> Product:
         return self.product_dao.find_by_id(product_id, AuthenticationContext.get_current_user())
 
+    def find_all(self) -> List[Product]:
+        return self.product_dao.find_all(AuthenticationContext.get_current_user())
+
     def find_or_create_from_dto(self, dto: dict) -> Optional[Product]:
         if not dto.get("id"):
             return None

@@ -1,10 +1,13 @@
 from typing import Optional
 
 from my_home_server.mappers.mapper_interface import MapperInterface
+from my_home_server.mappers.user_group_mapper import UserGroupMapper
 from my_home_server.models.user import User
 
 
 class UserMapper(MapperInterface):
+    def __init__(self):
+        self.user_group_mapper = UserGroupMapper()
 
     def to_dto(self, user: User) -> Optional[dict]:
         if not user:
@@ -15,7 +18,7 @@ class UserMapper(MapperInterface):
             "name": user.name,
             "login": user.login,
             "password": None,
-            "user_group": {},
+            "user_group": self.user_group_mapper.to_dto(user.user_group),
             "created_at": user.created_at
         }
 
