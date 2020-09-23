@@ -14,8 +14,8 @@ jobs:
       - name: Test
         uses: vitorsm/python-test-action@master
         with:
-          deps_list: 'requirements.txt'
-          path: './'
-          test_dir: 'my_home_server/tests/'
+          deps_list: '../requirements.txt'
+          path: 'my_home_server'
+          test_dir: 'tests/'
           pattern: 'test_*.py'
-          python_path: './'
+          python_path: '../'
