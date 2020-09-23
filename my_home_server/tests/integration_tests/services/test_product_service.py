@@ -119,6 +119,20 @@ class TestProductService(BaseTest):
         self.assertEqual(109, product.brand.id)
         self.assertEqual("Brand 9", product.brand.name)
 
+    def test_update_by_dto_fields_none(self):
+        dto = {
+            "id": 1,
+            "name": "new_name",
+            "image_url": None
+        }
+
+        self.service.update_by_dto(dto)
+        product = self.db.session.query(Product).get(1)
+
+        self.assertEqual("new_name", product.name)
+        self.assertIsNone(product.product_type)
+        self.assertIsNone(product.brand)
+
     def test_update_by_dto_without_permission(self):
         dto = {
             "id": 2,

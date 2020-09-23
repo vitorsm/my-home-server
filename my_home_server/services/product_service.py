@@ -26,11 +26,6 @@ class ProductService(object):
         brand = self.brand_service.find_or_create(dto.get("brand"))
         product_type = self.product_type_service.find_or_create(dto.get("product_type"))
 
-        if brand and product.brand and not product.brand.id:
-            self.product_dao.expunge(product.brand)
-        if product_type and product.product_type and not product.product_type.id:
-            self.product_dao.expunge(product.product_type)
-
         product.brand = brand
         product.product_type = product_type
 
