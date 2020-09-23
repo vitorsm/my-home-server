@@ -1,4 +1,6 @@
-from sqlalchemy.exc import IntegrityError
+from typing import List
+
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 
 from my_home_server.exceptions.duplicate_entry_exception import DuplicateEntryException
 import my_home_server.utils.sql_utils as sql_utils
@@ -8,27 +10,52 @@ class DAO(object):
     def __init__(self, db):
         self.db = db
 
-    def commit(self):
-        self.db.session.commit()
+    def commit(self, raise_integrity_error: bool = False):
+        try:
+            self.db.session.commit()
+        except IntegrityError as ex:
+            if raise_integrity_error:
+                raise ex
+            else:
+                self.__handle_integrity_error(ex, "")
 
     def expunge(self, entity: object):
-        self.db.session.expunge(entity)
+        try:
+            self.db.session.expunge(entity)
+        except InvalidRequestError:
+            # When a entity is not exist in the session is not necessary raise an error,
+            # because it's like it's already been expunged
+            pass
 
-    def add(self, entity: object, commit: bool = True):
+    def add(self, entity: object, commit: bool = False):
         self.db.session.add(entity)
         if commit:
             try:
-                self.commit()
+                self.commit(raise_integrity_error=True)
             except IntegrityError as ex:
                 self.__handle_integrity_error(ex, type(entity).__name__)
 
-    def delete(self, entity: object, commit: bool = True):
-        self.db.session.delete(entity)
-        if commit:
-            self.commit()
+    def add_from_list(self, entity_list: List[object], commit: bool = False):
+        if not entity_list or not len(entity_list):
+            return
 
-    def update(self, entity: object, commit: bool = True):
-        self.db.session.merge(entity)
+        for entity in entity_list:
+            self.db.session.add(entity)
+
+        if commit:
+            try:
+                self.commit(raise_integrity_error=True)
+            except IntegrityError as ex:
+                self.__handle_integrity_error(ex, type(entity_list[0]).__name__)
+
+    def update(self, entity: object, commit: bool = False):
+        if entity not in self.db.session:
+            self.db.session.add(entity)
+        if commit:
+            self.db.session.commit()
+
+    def delete(self, entity: object, commit: bool = False):
+        self.db.session.delete(entity)
         if commit:
             self.commit()
 
@@ -49,3 +76,4 @@ class DAO(object):
             raise DuplicateEntryException(entity, field, value)
 
         raise exception
+

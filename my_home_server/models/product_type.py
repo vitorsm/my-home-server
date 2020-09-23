@@ -16,7 +16,8 @@ class ProductType(Base):
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     parent_product_type = relationship("ProductType", single_parent=True, foreign_keys=[parent_product_type_id],
-                                       uselist=False, cascade="all, delete-orphan")
+                                       remote_side=[parent_product_type_id], uselist=False,
+                                       cascade="all, delete-orphan")
 
     created_by = relationship("User", lazy="select")
 

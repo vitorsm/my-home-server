@@ -167,7 +167,7 @@ class TestProductService(BaseTest):
             "image_url": None
         }
 
-        self.assertIsNone(self.service.find_or_create(dto))
+        self.assertIsNone(self.service.find_or_create_by_dto(dto))
 
     def test_find_or_create_creating(self):
         dto = {
@@ -178,7 +178,7 @@ class TestProductService(BaseTest):
             "image_url": None
         }
 
-        product = self.service.find_or_create(dto)
+        product = self.service.find_or_create_by_dto(dto)
 
         assert product in self.db.session
 
@@ -194,7 +194,7 @@ class TestProductService(BaseTest):
             "image_url": None
         }
 
-        product = self.service.find_or_create(dto)
+        product = self.service.find_or_create_by_dto(dto)
 
         self.assertEqual(1, product.id)
         self.assertEqual(8, product.product_type.id)

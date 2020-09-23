@@ -12,7 +12,8 @@ class PurchaseList(Base):
     name = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     created_by_id = Column(Integer, ForeignKey("user.id"), nullable=False)
-    purchase_products = relationship("PurchaseListProduct", lazy="select")
+    purchase_products = relationship("PurchaseListProduct", lazy="select", back_populates="purchase_list",
+                                     cascade="all, delete-orphan")
 
     created_by = relationship("User", lazy="select")
 

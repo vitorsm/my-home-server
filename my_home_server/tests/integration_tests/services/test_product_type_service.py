@@ -158,7 +158,7 @@ class TestProductTypeService(BaseTest):
             }
         }
 
-        product_type = self.service.find_or_create(dto)
+        product_type = self.service.find_or_create_by_dto(dto)
 
         self.assertIsNone(product_type)
 
@@ -175,7 +175,7 @@ class TestProductTypeService(BaseTest):
             }
         }
 
-        product_type = self.service.find_or_create(dto)
+        product_type = self.service.find_or_create_by_dto(dto)
 
         self.assertEqual(3, product_type.id)
         self.assertNotEqual("other_name", product_type.id)
@@ -193,7 +193,7 @@ class TestProductTypeService(BaseTest):
             }
         }
 
-        product_type = self.service.find_or_create(dto)
+        product_type = self.service.find_or_create_by_dto(dto)
 
         self.assertEqual(300, product_type.id)
         self.assertNotEqual("other_name", product_type.id)

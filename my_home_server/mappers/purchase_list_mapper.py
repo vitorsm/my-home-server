@@ -31,7 +31,7 @@ class PurchaseListMapper(MapperInterface):
         purchase_list = loaded_object if loaded_object else PurchaseList()
         purchase_list.id = dto.get("id")
         purchase_list.name = dto.get("name")
-        purchase_list.purchase_products = self.__products_to_obj(dto.get("purchase_products"))
+        purchase_list.purchase_products = self.__products_to_obj(dto.get("purchase_products"), purchase_list)
 
         if not loaded_object:
             purchase_list.created_by = self.user_mapper.to_object(dto.get("created_by"))
@@ -48,27 +48,32 @@ class PurchaseListMapper(MapperInterface):
     def get_entity_name(self):
         return PurchaseList.__name__
 
-    def __products_to_obj(self, purchase_products_dto: List[dict]) -> List[PurchaseListProduct]:
+    def __products_to_obj(self, purchase_products_dto: List[dict],
+                          purchase_list: PurchaseList) -> List[PurchaseListProduct]:
         products = list()
-        for dto in purchase_products_dto:
-            purchase_product = PurchaseListProduct()
-            purchase_product.product = self.product_mapper.to_object(dto)
-            purchase_product.quantity = dto.get("quantity")
-            purchase_product.value = dto.get("value")
-            products.append(purchase_product)
+        if purchase_products_dto:
+            for dto in purchase_products_dto:
+                purchase_product = PurchaseListProduct()
+                purchase_product.product = self.product_mapper.to_object(dto)
+                purchase_product.quantity = dto.get("quantity")
+                purchase_product.estimated_value = dto.get("value")
+                purchase_product.purchase_list = purchase_list
+                products.append(purchase_product)
 
         return products
 
     def __products_to_dto(self, purchase_products: List[PurchaseListProduct]) -> List[dict]:
         products = list()
-        for purchase_product in purchase_products:
-            dto = self.product_mapper.to_dto(purchase_product.product)
 
-            dto.update({
-                "value": purchase_product.value,
-                "quantity": purchase_product.quantity
-            })
+        if products:
+            for purchase_product in purchase_products:
+                dto = self.product_mapper.to_dto(purchase_product.product)
 
-            products.append(dto)
+                dto.update({
+                    "value": purchase_product.estimated_value,
+                    "quantity": purchase_product.quantity
+                })
+
+                products.append(dto)
 
         return products

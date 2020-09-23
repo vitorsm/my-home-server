@@ -81,34 +81,34 @@ class TestBrandService(BaseTest):
 
         self.assertEqual(new_name, brand.name)
 
-    def test_find_or_create_without_id(self):
+    def test_find_or_create_by_dto_without_id(self):
         dto = {
             "id": 0,
             "name": "new_name"
         }
 
-        brand = self.service.find_or_create(dto)
+        brand = self.service.find_or_create_by_dto(dto)
 
         self.assertIsNone(brand)
 
-    def test_find_or_create_creating(self):
+    def test_find_or_create_by_dto_creating(self):
         dto = {
             "id": 10001,
             "name": "new_name"
         }
 
-        brand = self.service.find_or_create(dto)
+        brand = self.service.find_or_create_by_dto(dto)
 
         self.assertEqual(10001, brand.id)
         self.assertEqual("new_name", brand.name)
 
-    def test_find_or_create_not_creating(self):
+    def test_find_or_create_by_dto_not_creating(self):
         dto = {
             "id": 100,
             "name": "other"
         }
 
-        brand = self.service.find_or_create(dto)
+        brand = self.service.find_or_create_by_dto(dto)
 
         self.assertEqual(100, brand.id)
         self.assertNotEqual("other", brand.name)

@@ -13,4 +13,4 @@ class PurchaseListDAO(DAO):
 
     def find_by_id(self, purchase_list_id: int, current_user: User) -> Optional[PurchaseList]:
         return self.db.session.query(PurchaseList).filter(and_(PurchaseList.id == purchase_list_id,
-                                                          PurchaseList.created_by == current_user)).all()
+                                                          PurchaseList.created_by == current_user)).first()

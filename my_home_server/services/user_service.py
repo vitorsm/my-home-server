@@ -40,7 +40,7 @@ class UserService(object):
         user.user_group = self.user_group_service.get_default_user_group()
 
         try:
-            self.user_dao.add(user)
+            self.user_dao.add(user, commit=True)
         except DuplicateEntryException as exception:
             exception.error_code = ErrorCode.USER_LOGIN_ALREADY_EXISTS
             raise exception
@@ -63,4 +63,7 @@ class UserService(object):
         if dto.get("password"):
             user.password = PasswordEncryption.encrypt_password(dto.get("password"))
 
+        self.user_dao.update(user, commit=True)
+
+    def commit(self):
         self.user_dao.commit()
