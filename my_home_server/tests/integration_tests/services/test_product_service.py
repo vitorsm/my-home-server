@@ -30,7 +30,7 @@ class TestProductService(BaseTest):
         self.assertIsNone(product.product_type)
         self.assertIsNone(product.brand)
 
-    def test_create_by_dto_without_name(self):
+    def test_create_from_dto_without_name(self):
         dto = {
             "product_type": None,
             "brand": None,
@@ -38,12 +38,12 @@ class TestProductService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.create_by_dto(dto)
+            self.service.create_from_dto(dto)
 
         self.assertEqual(["name"], exception.exception.required_fields)
         self.assertEqual(Product.__name__, exception.exception.entity_name)
 
-    def test_create_by_dto(self):
+    def test_create_from_dto(self):
         dto = {
             "name": "Name test",
             "product_type": None,
@@ -51,14 +51,44 @@ class TestProductService(BaseTest):
             "image_url": None
         }
 
-        product = self.service.create_by_dto(dto)
+        product = self.service.create_from_dto(dto)
 
         assert product in self.db.session
         product = self.db.session.query(Product).get(product.id)
 
         self.assertEqual("Name test", product.name)
 
-    def test_create_by_dto_with_brand_and_product_type(self):
+    def test_create_from_dto_with_new_product_type(self):
+        dto = {
+            "name": "Name test",
+            "product_type": {"name": "new_product_type_name"},
+            "brand": None,
+            "image_url": None
+        }
+
+        product = self.service.create_from_dto(dto)
+
+        assert product in self.db.session
+        product = self.db.session.query(Product).get(product.id)
+
+        self.assertEqual("new_product_type_name", product.product_type.name)
+
+    def test_create_from_dto_with_new_brand(self):
+        dto = {
+            "name": "Name test",
+            "product_type": None,
+            "brand": {"name": "new_brand_name"},
+            "image_url": None
+        }
+
+        product = self.service.create_from_dto(dto)
+
+        assert product in self.db.session
+        product = self.db.session.query(Product).get(product.id)
+
+        self.assertEqual("new_brand_name", product.brand.name)
+
+    def test_create_from_dto_with_brand_and_product_type(self):
         dto = {
             "name": "Name test 2",
             "product_type": {"id": 8},
@@ -66,7 +96,7 @@ class TestProductService(BaseTest):
             "image_url": None
         }
 
-        product = self.service.create_by_dto(dto)
+        product = self.service.create_from_dto(dto)
 
         assert product in self.db.session
         product = self.db.session.query(Product).get(product.id)
@@ -75,7 +105,7 @@ class TestProductService(BaseTest):
         self.assertEqual(8, product.product_type.id)
         self.assertEqual(108, product.brand.id)
 
-    def test_update_by_dto_without_id_and_name(self):
+    def test_update_from_dto_without_id_and_name(self):
         dto = {
             "product_type": None,
             "brand": None,
@@ -83,12 +113,12 @@ class TestProductService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(["id", "name"], exception.exception.required_fields)
         self.assertEqual(Product.__name__, exception.exception.entity_name)
 
-    def test_update_by_dto_without_name(self):
+    def test_update_from_dto_without_name(self):
         dto = {
             "id": 1,
             "product_type": None,
@@ -97,12 +127,12 @@ class TestProductService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(["name"], exception.exception.required_fields)
         self.assertEqual(Product.__name__, exception.exception.entity_name)
 
-    def test_update_by_dto(self):
+    def test_update_from_dto(self):
         dto = {
             "id": 1,
             "name": "new_name",
@@ -111,7 +141,7 @@ class TestProductService(BaseTest):
             "image_url": None
         }
 
-        self.service.update_by_dto(dto)
+        self.service.update_from_dto(dto)
         product = self.db.session.query(Product).get(1)
 
         self.assertEqual("new_name", product.name)
@@ -119,21 +149,21 @@ class TestProductService(BaseTest):
         self.assertEqual(109, product.brand.id)
         self.assertEqual("Brand 9", product.brand.name)
 
-    def test_update_by_dto_fields_none(self):
+    def test_update_from_dto_fields_none(self):
         dto = {
             "id": 1,
             "name": "new_name",
             "image_url": None
         }
 
-        self.service.update_by_dto(dto)
+        self.service.update_from_dto(dto)
         product = self.db.session.query(Product).get(1)
 
         self.assertEqual("new_name", product.name)
         self.assertIsNone(product.product_type)
         self.assertIsNone(product.brand)
 
-    def test_update_by_dto_without_permission(self):
+    def test_update_from_dto_without_permission(self):
         dto = {
             "id": 2,
             "name": "Name test",
@@ -143,7 +173,7 @@ class TestProductService(BaseTest):
         }
 
         with self.assertRaises(ObjectNotFoundException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(Product.__name__, exception.exception.entity_name)
         self.assertEqual({"id": 2}, exception.exception.entity_identifier)
@@ -167,7 +197,7 @@ class TestProductService(BaseTest):
             "image_url": None
         }
 
-        self.assertIsNone(self.service.find_or_create_by_dto(dto))
+        self.assertIsNone(self.service.find_or_create_from_dto(dto))
 
     def test_find_or_create_creating(self):
         dto = {
@@ -178,7 +208,7 @@ class TestProductService(BaseTest):
             "image_url": None
         }
 
-        product = self.service.find_or_create_by_dto(dto)
+        product = self.service.find_or_create_from_dto(dto)
 
         assert product in self.db.session
 
@@ -194,8 +224,19 @@ class TestProductService(BaseTest):
             "image_url": None
         }
 
-        product = self.service.find_or_create_by_dto(dto)
+        product = self.service.find_or_create_from_dto(dto)
 
         self.assertEqual(1, product.id)
         self.assertEqual(8, product.product_type.id)
         self.assertEqual(108, product.brand.id)
+
+    def test_fetch_or_create_without_value(self):
+        self.assertIsNone(self.service.fetch_or_create(None))
+
+    def test_fetch_or_create_with_value(self):
+        product = self.db.session.query(Product).get(40)
+        new_product = self.service.fetch_or_create(product)
+
+        assert product not in self.db.session
+        
+        self.assertEqual(product, new_product)

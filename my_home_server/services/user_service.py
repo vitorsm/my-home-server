@@ -31,7 +31,7 @@ class UserService(object):
 
         return user
 
-    def create_by_dto(self, dto: dict):
+    def create_from_dto(self, dto: dict):
         self.mapper.validate_dto_to_insert(dto)
 
         user = self.mapper.to_object(dto)
@@ -47,7 +47,7 @@ class UserService(object):
 
         return user
 
-    def update_by_dto(self, dto: dict):
+    def update_from_dto(self, dto: dict):
         self.mapper.validate_dto_to_update(dto)
 
         user = self.find_by_id(dto.get("id"))
@@ -64,6 +64,3 @@ class UserService(object):
             user.password = PasswordEncryption.encrypt_password(dto.get("password"))
 
         self.user_dao.update(user, commit=True)
-
-    def commit(self):
-        self.user_dao.commit()

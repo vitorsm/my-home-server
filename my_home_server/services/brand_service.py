@@ -16,7 +16,7 @@ class BrandService(object):
         self.mapper = Mapper.get_mapper(Brand.__name__)
 
     @transaction
-    def create(self, brand: Brand):
+    def create(self, brand: Brand) -> Brand:
         brand.created_at = datetime.utcnow()
         brand.created_by = AuthenticationContext.get_current_user()
 
@@ -25,7 +25,7 @@ class BrandService(object):
         return brand
 
     @transaction
-    def create_by_dto(self, dto: dict):
+    def create_from_dto(self, dto: dict):
         self.mapper.validate_dto_to_insert(dto)
 
         brand = self.mapper.to_object(dto)
@@ -50,7 +50,7 @@ class BrandService(object):
         return new_brand
 
     @transaction
-    def update_by_dto(self, dto: dict):
+    def update_from_dto(self, dto: dict):
         self.mapper.validate_dto_to_update(dto)
 
         brand = self.brand_dao.find_by_id(dto.get("id"), AuthenticationContext.get_current_user())
@@ -71,14 +71,14 @@ class BrandService(object):
         self.brand_dao.delete(brand)
 
     @transaction
-    def find_or_create_by_dto(self, dto: dict) -> Optional[Brand]:
+    def find_or_create_from_dto(self, dto: dict) -> Optional[Brand]:
         if not dto or not dto.get("id"):
             return None
 
         brand = self.find_by_id(dto.get("id"))
 
         if not brand:
-            brand = self.create_by_dto(dto)
+            brand = self.create_from_dto(dto)
 
         return brand
 

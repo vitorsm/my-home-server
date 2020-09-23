@@ -1,6 +1,6 @@
 from datetime import datetime
 from functools import wraps
-from typing import Optional
+from typing import Optional, List
 
 from my_home_server.dao.purchase_list_dao import PurchaseListDAO
 from my_home_server.exceptions.object_not_found import ObjectNotFoundException
@@ -20,8 +20,11 @@ class PurchaseListService(object):
     def find_by_id(self, purchase_list_id: int) -> Optional[PurchaseList]:
         return self.purchase_list_dao.find_by_id(purchase_list_id, AuthenticationContext.get_current_user())
 
+    def find_all(self) -> List[PurchaseList]:
+        return self.purchase_list_dao.find_all_by_user(AuthenticationContext.get_current_user())
+
     @transaction
-    def create_by_dto(self, dto: dict):
+    def create_from_dto(self, dto: dict):
         self.mapper.validate_dto_to_insert(dto)
 
         purchase_list = self.mapper.to_object(dto)
@@ -42,7 +45,7 @@ class PurchaseListService(object):
             product_purchase.product = self.product_service.fetch_or_create(product_purchase.product)
 
     @transaction
-    def update_by_dto(self, dto: dict):
+    def update_from_dto(self, dto: dict):
         self.mapper.validate_dto_to_update(dto)
 
         purchase_list = self.find_by_id(dto.get("id"))

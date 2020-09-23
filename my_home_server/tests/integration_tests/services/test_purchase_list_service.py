@@ -1,5 +1,9 @@
 from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
+from my_home_server.exceptions.object_not_found import ObjectNotFoundException
+from my_home_server.models.purchase import Purchase
 from my_home_server.models.purchase_list import PurchaseList
+from my_home_server.models.user import User
+from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.services.purchase_list_service import PurchaseListService
 from my_home_server.tests.integration_tests.base_test import BaseTest
 
@@ -22,12 +26,11 @@ class TestPurchaseListService(BaseTest):
         self.assertEqual("List 1", purchase_list.name)
         self.assertEqual(2, len(purchase_list.purchase_products))
 
-    def test_create_by_dto(self):
+    def test_create_from_dto(self):
         dto = {
             "name": "Test name",
             "purchase_products": [
                 {
-                    "id": 1111,
                     "name": "new_name",
                     "product_type": {"id": 100, "name": "new_product_type"},
                     "brand": {"id": 109},
@@ -46,7 +49,7 @@ class TestPurchaseListService(BaseTest):
             ]
         }
 
-        purchase_list = self.service.create_by_dto(dto)
+        purchase_list = self.service.create_from_dto(dto)
 
         assert purchase_list in self.db.session
 
@@ -56,7 +59,7 @@ class TestPurchaseListService(BaseTest):
         self.assertEqual("new_product_type2", purchase_list.purchase_products[1].product.product_type.name)
         self.assertEqual(2, purchase_list.purchase_products[1].quantity)
 
-    def test_create_by_dto_without_name(self):
+    def test_create_from_dto_without_name(self):
         dto = {
             "purchase_products": [
                 {
@@ -80,23 +83,23 @@ class TestPurchaseListService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.create_by_dto(dto)
+            self.service.create_from_dto(dto)
 
         self.assertEqual(["name"], exception.exception.required_fields)
         self.assertEqual(PurchaseList.__name__, exception.exception.entity_name)
 
-    def test_create_by_dto_without_products(self):
+    def test_create_from_dto_without_products(self):
         dto = {
             "name": "Test name"
         }
 
-        purchase_list = self.service.create_by_dto(dto)
+        purchase_list = self.service.create_from_dto(dto)
 
         assert purchase_list in self.db.session
 
         self.assertEqual("Test name", purchase_list.name)
 
-    def test_update_by_dto_without_name(self):
+    def test_update_from_dto_without_name(self):
         dto = {
             "id": 1,
             "purchase_products": [
@@ -121,12 +124,12 @@ class TestPurchaseListService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(["name"], exception.exception.required_fields)
         self.assertEqual(PurchaseList.__name__, exception.exception.entity_name)
 
-    def test_update_by_dto_with_new_product(self):
+    def test_update_from_dto_with_new_product(self):
         dto = {
             "id": 3,
             "name": "Test name",
@@ -157,7 +160,7 @@ class TestPurchaseListService(BaseTest):
             ]
         }
 
-        self.service.update_by_dto(dto)
+        self.service.update_from_dto(dto)
 
         purchase_list = self.db.session.query(PurchaseList).get(3)
 
@@ -173,9 +176,9 @@ class TestPurchaseListService(BaseTest):
         self.assertEqual(1, purchase_list.purchase_products[0].quantity)
         self.assertEqual(2, purchase_list.purchase_products[1].quantity)
 
-    def test_update_by_dto_without_permission(self):
+    def test_update_from_dto_without_permission(self):
         dto = {
-            "id": 1,
+            "id": 2,
             "name": "Test name",
             "purchase_products": [
                 {
@@ -198,3 +201,29 @@ class TestPurchaseListService(BaseTest):
             ]
         }
 
+        with self.assertRaises(ObjectNotFoundException) as exception:
+            self.service.update_from_dto(dto)
+
+        self.assertEqual({"id": 2}, exception.exception.entity_identifier)
+        self.assertEqual(PurchaseList.__name__, exception.exception.entity_name)
+
+    def test_delete_by_id_without_permission(self):
+        with self.assertRaises(ObjectNotFoundException) as exception:
+            self.service.delete_by_id(2)
+
+        self.assertEqual({"id": 2}, exception.exception.entity_identifier)
+        self.assertEqual(PurchaseList.__name__, exception.exception.entity_name)
+
+    def test_delete_by_id(self):
+        self.service.delete_by_id(4)
+        self.assertIsNone(self.db.session.query(PurchaseList).get(4))
+
+    def test_find_all(self):
+        user = self.db.session.query(User).get(4)
+        AuthenticationContext.init_context(user)
+
+        purchase_lists = self.service.find_all()
+
+        self.assertEqual(2, len(purchase_lists))
+        self.assertEqual(2, purchase_lists[0].id)
+        self.assertEqual(6, purchase_lists[1].id)

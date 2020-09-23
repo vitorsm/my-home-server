@@ -27,32 +27,32 @@ class TestProductTypeService(BaseTest):
         self.assertEqual(6, len(product_types))
         self.assertNotIn(3, [p.id for p in product_types])
 
-    def test_create_by_dto_without_name(self):
+    def test_create_from_dto_without_name(self):
         dto = {
             "name": None,
             "description": "Test description"
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.create_by_dto(dto)
+            self.service.create_from_dto(dto)
 
         self.assertEqual(["name"], exception.exception.required_fields)
         self.assertEqual(ProductType.__name__, exception.exception.entity_name)
 
-    def test_create_by_dto(self):
+    def test_create_from_dto(self):
         dto = {
             "name": "Name",
             "description": "Test description"
         }
 
-        product_type = self.service.create_by_dto(dto)
+        product_type = self.service.create_from_dto(dto)
 
         assert product_type in self.db.session
 
         self.assertEqual("Name", product_type.name)
         self.assertEqual("Test description", product_type.description)
 
-    def test_create_by_dto_with_parents(self):
+    def test_create_from_dto_with_parents(self):
         dto = {
             "name": "Name",
             "description": "Test description",
@@ -64,7 +64,7 @@ class TestProductTypeService(BaseTest):
             }
         }
 
-        product_type = self.service.create_by_dto(dto)
+        product_type = self.service.create_from_dto(dto)
 
         assert product_type in self.db.session
 
@@ -73,7 +73,7 @@ class TestProductTypeService(BaseTest):
         self.assertEqual("Test 2", product_type.parent_product_type.name)
         self.assertEqual(1, product_type.parent_product_type.parent_product_type.id)
 
-    def test_update_by_dto_without_id(self):
+    def test_update_from_dto_without_id(self):
         dto = {
             "name": "Name",
             "description": "Test description",
@@ -86,12 +86,12 @@ class TestProductTypeService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(["id"], exception.exception.required_fields)
         self.assertEqual(ProductType.__name__, exception.exception.entity_name)
 
-    def test_update_by_dto_without_permission(self):
+    def test_update_from_dto_without_permission(self):
         dto = {
             "id": 2,
             "name": "Name",
@@ -105,12 +105,12 @@ class TestProductTypeService(BaseTest):
         }
 
         with self.assertRaises(ObjectNotFoundException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(ProductType.__name__, exception.exception.entity_name)
         self.assertEqual({"id": 2}, exception.exception.entity_identifier)
 
-    def test_update_by_dto(self):
+    def test_update_from_dto(self):
         dto = {
             "id": 3,
             "name": "new_name",
@@ -123,7 +123,7 @@ class TestProductTypeService(BaseTest):
             }
         }
 
-        product_type = self.service.update_by_dto(dto)
+        product_type = self.service.update_from_dto(dto)
 
         self.assertEqual("new_name", product_type.name)
         self.assertEqual("Test description", product_type.description)
@@ -158,7 +158,7 @@ class TestProductTypeService(BaseTest):
             }
         }
 
-        product_type = self.service.find_or_create_by_dto(dto)
+        product_type = self.service.find_or_create_from_dto(dto)
 
         self.assertIsNone(product_type)
 
@@ -175,7 +175,7 @@ class TestProductTypeService(BaseTest):
             }
         }
 
-        product_type = self.service.find_or_create_by_dto(dto)
+        product_type = self.service.find_or_create_from_dto(dto)
 
         self.assertEqual(3, product_type.id)
         self.assertNotEqual("other_name", product_type.id)
@@ -193,7 +193,7 @@ class TestProductTypeService(BaseTest):
             }
         }
 
-        product_type = self.service.find_or_create_by_dto(dto)
+        product_type = self.service.find_or_create_from_dto(dto)
 
         self.assertEqual(300, product_type.id)
         self.assertNotEqual("other_name", product_type.id)

@@ -29,7 +29,7 @@ class TestBrandService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.create_by_dto(dto)
+            self.service.create_from_dto(dto)
 
         self.assertEqual(["name"], exception.exception.required_fields)
         self.assertEqual(Brand.__name__, exception.exception.entity_name)
@@ -39,7 +39,7 @@ class TestBrandService(BaseTest):
             "name": "Test brand"
         }
 
-        brand = self.service.create_by_dto(dto)
+        brand = self.service.create_from_dto(dto)
 
         assert brand in self.db.session
 
@@ -52,7 +52,7 @@ class TestBrandService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(Brand.__name__, exception.exception.entity_name)
         self.assertEqual(["name"], exception.exception.required_fields)
@@ -64,7 +64,7 @@ class TestBrandService(BaseTest):
         }
 
         with self.assertRaises(ObjectNotFoundException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(Brand.__name__, exception.exception.entity_name)
         self.assertEqual({"id": 106}, exception.exception.entity_identifier)
@@ -76,39 +76,39 @@ class TestBrandService(BaseTest):
             "name": new_name
         }
 
-        self.service.update_by_dto(dto)
+        self.service.update_from_dto(dto)
         brand = self.service.find_by_id(100)
 
         self.assertEqual(new_name, brand.name)
 
-    def test_find_or_create_by_dto_without_id(self):
+    def test_find_or_create_from_dto_without_id(self):
         dto = {
             "id": 0,
             "name": "new_name"
         }
 
-        brand = self.service.find_or_create_by_dto(dto)
+        brand = self.service.find_or_create_from_dto(dto)
 
         self.assertIsNone(brand)
 
-    def test_find_or_create_by_dto_creating(self):
+    def test_find_or_create_from_dto_creating(self):
         dto = {
             "id": 10001,
             "name": "new_name"
         }
 
-        brand = self.service.find_or_create_by_dto(dto)
+        brand = self.service.find_or_create_from_dto(dto)
 
         self.assertEqual(10001, brand.id)
         self.assertEqual("new_name", brand.name)
 
-    def test_find_or_create_by_dto_not_creating(self):
+    def test_find_or_create_from_dto_not_creating(self):
         dto = {
             "id": 100,
             "name": "other"
         }
 
-        brand = self.service.find_or_create_by_dto(dto)
+        brand = self.service.find_or_create_from_dto(dto)
 
         self.assertEqual(100, brand.id)
         self.assertNotEqual("other", brand.name)

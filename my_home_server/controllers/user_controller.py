@@ -30,7 +30,7 @@ def get_current_user(user_mapper: UserMapper):
 @controller.route("/", methods=['POST'])
 def create_user(user_service: UserService, user_mapper: UserMapper):
     user_dto = request.json
-    user = user_service.create_by_dto(user_dto)
+    user = user_service.create_from_dto(user_dto)
     return jsonify(user_mapper.to_dto(user))
 
 
@@ -39,5 +39,5 @@ def create_user(user_service: UserService, user_mapper: UserMapper):
 @authentication_utils.set_authentication_context
 def update_user(user_service: UserService, user_mapper: UserMapper):
     user_dto = request.json
-    user = user_service.update_by_dto(user_dto)
+    user = user_service.update_from_dto(user_dto)
     return jsonify(user_mapper.to_dto(user))

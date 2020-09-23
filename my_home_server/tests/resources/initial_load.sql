@@ -40,6 +40,7 @@ insert into product (id, name, product_type_id, brand_id, created_by_id, created
 (2, 'Product 2', 9, 108, 4, '2020-09-22 19:56:28.757876', 1, null),
 (3, 'Product 3', 9, 108, 4, '2020-09-22 19:56:28.757876', 0, null),
 (4, 'Product 4', 8, 108, 1, '2020-09-22 19:56:28.757876', 0, null),
+(40, 'Product 40', 8, 108, 1, '2020-09-22 19:56:28.757876', 1, null),
 (5, 'Product 5', null, null, 1, '2020-09-22 19:56:28.757876', 0, null),
 
 -- to use in purchase_list_test
@@ -56,7 +57,8 @@ insert into purchase_list (id, name, created_by_id, created_at) values
 (2, 'List 2', 4, '2020-09-22 19:56:28.757876'),
 (3, 'List 3', 1, '2020-09-22 19:56:28.757876'),
 (4, 'List 4', 1, '2020-09-22 19:56:28.757876'),
-(5, 'List 5', 1, '2020-09-22 19:56:28.757876');
+(5, 'List 5', 1, '2020-09-22 19:56:28.757876'),
+(6, 'List 6', 4, '2020-09-22 19:56:28.757876');
 
 insert into purchase_list_has_product (purchase_list_id, product_id, estimated_value, quantity) values
 (1, 10, 12.5, 3),

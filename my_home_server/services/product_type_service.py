@@ -31,7 +31,7 @@ class ProductTypeService(object):
         return product_type
 
     @transaction
-    def create_by_dto(self, dto: dict):
+    def create_from_dto(self, dto: dict):
         self.mapper.validate_dto_to_insert(dto)
         product_type = self.mapper.to_object(dto)
 
@@ -54,7 +54,7 @@ class ProductTypeService(object):
                                                         is_update)
 
     @transaction
-    def update_by_dto(self, dto: dict):
+    def update_from_dto(self, dto: dict):
         self.mapper.validate_dto_to_update(dto)
 
         product_type = self.product_type_dao.find_by_id(dto.get("id"), AuthenticationContext.get_current_user())
@@ -80,14 +80,14 @@ class ProductTypeService(object):
 
         self.product_type_dao.delete(product_type)
 
-    def find_or_create_by_dto(self, dto: dict) -> Optional[ProductType]:
+    def find_or_create_from_dto(self, dto: dict) -> Optional[ProductType]:
         if not dto or not dto.get("id"):
             return None
 
         product_type = self.find_by_id(dto.get("id"))
 
         if not product_type:
-            product_type = self.create_by_dto(dto)
+            product_type = self.create_from_dto(dto)
 
         return product_type
 

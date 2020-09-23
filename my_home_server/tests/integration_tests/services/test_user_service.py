@@ -25,7 +25,7 @@ class TestUserService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.create_by_dto(dto)
+            self.service.create_from_dto(dto)
 
         self.assertEqual(["name"], exception.exception.required_fields)
         self.assertEqual(User.__name__, exception.exception.entity_name)
@@ -37,7 +37,7 @@ class TestUserService(BaseTest):
             "password": "12345"
         }
 
-        created_user = self.service.create_by_dto(dto)
+        created_user = self.service.create_from_dto(dto)
 
         assert created_user in self.db.session
 
@@ -48,11 +48,11 @@ class TestUserService(BaseTest):
             "password": "12345"
         }
 
-        created_user = self.service.create_by_dto(dto)
+        created_user = self.service.create_from_dto(dto)
         assert created_user in self.db.session
 
         with self.assertRaises(DuplicateEntryException) as exception:
-            self.service.create_by_dto(dto)
+            self.service.create_from_dto(dto)
 
         self.assertEqual(User.__name__, exception.exception.entity)
         self.assertEqual("login", exception.exception.field)
@@ -100,7 +100,7 @@ class TestUserService(BaseTest):
         }
 
         with self.assertRaises(InvalidDTOException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(["id"], exception.exception.required_fields)
         self.assertEqual(User.__name__, exception.exception.entity_name)
@@ -114,7 +114,7 @@ class TestUserService(BaseTest):
         }
 
         with self.assertRaises(PermissionException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual(Actions.UPDATE, exception.exception.action)
         self.assertEqual(User.__name__, exception.exception.entity)
@@ -133,7 +133,7 @@ class TestUserService(BaseTest):
         AuthenticationContext.init_context(user)
 
         with self.assertRaises(ObjectNotFoundException) as exception:
-            self.service.update_by_dto(dto)
+            self.service.update_from_dto(dto)
 
         self.assertEqual({"id": 290}, exception.exception.entity_identifier)
         self.assertEqual(User.__name__, exception.exception.entity_name)
@@ -149,7 +149,7 @@ class TestUserService(BaseTest):
         user = self.service.find_by_id(2)
         AuthenticationContext.init_context(user)
 
-        self.service.update_by_dto(dto)
+        self.service.update_from_dto(dto)
 
         user = self.service.find_by_id(2)
 
@@ -167,7 +167,7 @@ class TestUserService(BaseTest):
         user = self.service.find_by_id(2)
         AuthenticationContext.init_context(user)
 
-        self.service.update_by_dto(dto)
+        self.service.update_from_dto(dto)
 
         user = self.service.find_by_id(2)
 
