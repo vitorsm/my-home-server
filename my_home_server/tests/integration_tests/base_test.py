@@ -47,7 +47,8 @@ class BaseTest(TestCase):
         AuthenticationContext.init_context(default_user)
 
     def initial_load(self):
-        file_path = BaseTest.get_current_dir() + "/my_home_server/tests/resources/initial_load.sql"
+        # /home/vitor/git/my-home-server/my_home_server//my_home_server/tests/resources/initial_load.sql
+        file_path = BaseTest.get_current_dir() + "tests/resources/initial_load.sql"
         file = open(file_path)
         for query in file.read().split(";"):
             if query.strip():
@@ -84,4 +85,4 @@ class BaseTest(TestCase):
             index = path.index("my_home_server/tests")
             path = path[:index]
 
-        return path if path.endswith("/") else path + "/"
+        return path + "/" if path.endswith("/my_home_server") else path + "/my_home_server/"
