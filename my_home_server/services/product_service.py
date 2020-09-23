@@ -77,7 +77,9 @@ class ProductService(object):
         product.brand = brand
         product.product_type = product_type
 
-        self.product_dao.commit()
+        self.product_dao.update(product)
+
+        return product
 
     @transaction
     def delete_by_id(self, product_id: int):

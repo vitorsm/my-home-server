@@ -130,6 +130,22 @@ class TestProductTypeService(BaseTest):
         self.assertEqual("Test 2", product_type.parent_product_type.name)
         self.assertEqual(4, product_type.parent_product_type.parent_product_type.id)
 
+    def test_update_from_dto_removing_parent(self):
+        dto = {
+            "id": 6,
+            "name": "new_name",
+            "description": "Test description",
+            "parent_product_type": None
+        }
+
+        self.service.update_from_dto(dto)
+
+        product_type = self.db.session.query(ProductType).get(6)
+
+        self.assertEqual("new_name", product_type.name)
+        self.assertEqual("Test description", product_type.description)
+        self.assertIsNone(product_type.parent_product_type)
+
     def test_delete_by_id_without_permission(self):
 
         with self.assertRaises(ObjectNotFoundException) as exception:

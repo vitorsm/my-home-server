@@ -2,14 +2,15 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt import jwt_required
 
-from my_home_server.controllers.errors_handler import fill_error_handlers_to_controller
+import my_home_server.security.authentication_utils as authentication_utils
+import my_home_server.controllers.errors_handler as errors_handler
+
 from my_home_server.mappers.user_mapper import UserMapper
 from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.services.user_service import UserService
-import my_home_server.security.authentication_utils as authentication_utils
 
 controller = Blueprint("user_controller", __name__, url_prefix="/api/user")
-fill_error_handlers_to_controller(controller)
+errors_handler.fill_error_handlers_to_controller(controller)
 
 
 @controller.route("<path:user_id>")

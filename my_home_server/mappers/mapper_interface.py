@@ -18,6 +18,12 @@ class MapperInterface(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError
 
+    def from_list_to_dto(self, obj_list: List[object]) -> List[dict]:
+        if not obj_list:
+            return list()
+
+        return [self.to_dto(obj) for obj in obj_list]
+
     def validate_dto_to_insert(self, dto: dict):
         self.generic_validate_dto(dto, self.get_required_fields_to_insert(), self.get_entity_name())
 

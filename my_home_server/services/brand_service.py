@@ -59,7 +59,9 @@ class BrandService(object):
             raise ObjectNotFoundException(Brand.__name__, {"id": dto.get("id")})
 
         self.mapper.to_object(dto, brand)
-        self.brand_dao.commit()
+        self.brand_dao.update(brand)
+
+        return brand
 
     @transaction
     def delete_by_id(self, brand_id: int):
