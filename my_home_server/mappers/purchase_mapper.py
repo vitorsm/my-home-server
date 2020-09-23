@@ -28,7 +28,7 @@ class PurchaseMapper(MapperInterface):
         }
 
     def to_object(self, dto: dict, loaded_object: Purchase = None) -> Optional[Purchase]:
-        if not dto:
+        if dto is None:
             return None
 
         purchase = loaded_object if loaded_object else Purchase()
@@ -44,15 +44,18 @@ class PurchaseMapper(MapperInterface):
         return purchase
 
     def get_required_fields_to_insert(self):
-        return ["name"]
+        return []
 
     def get_required_fields_to_update(self):
-        return ["id", "name", "products"]
+        return ["id"]
 
     def get_entity_name(self):
         return Purchase.__name__
 
     def __products_to_obj(self, purchase_products_dto: List[dict]) -> List[PurchaseProduct]:
+        if not purchase_products_dto:
+            return list()
+
         products = list()
         for dto in purchase_products_dto:
             purchase_product = PurchaseProduct()
@@ -64,6 +67,9 @@ class PurchaseMapper(MapperInterface):
         return products
 
     def __products_to_dto(self, purchase_products: List[PurchaseProduct]) -> List[dict]:
+        if not purchase_products:
+            return list()
+
         products = list()
         for purchase_product in purchase_products:
             dto = self.product_mapper.to_dto(purchase_product.product)

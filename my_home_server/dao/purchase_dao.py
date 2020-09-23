@@ -13,4 +13,4 @@ class PurchaseDAO(DAO):
 
     def find_by_id(self, purchase_id: int, current_user: User) -> Purchase:
         return self.db.session.query(Purchase).\
-            filter(and_(Purchase.id == purchase_id, Purchase.created_by == current_user)).all()
+            filter(and_(Purchase.id == purchase_id, Purchase.created_by == current_user)).first()

@@ -16,7 +16,7 @@ class Purchase(Base):
 
     created_by = relationship("User", lazy="select")
     purchase_list = relationship("PurchaseList", lazy="select")
-    products = relationship("PurchaseProduct", lazy="select")
+    products = relationship("PurchaseProduct", lazy="select", cascade="all, delete-orphan")
 
     def __eq__(self, other):
         return other and self.id == other.id

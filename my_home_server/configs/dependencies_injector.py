@@ -13,6 +13,7 @@ from my_home_server.services.brand_service import BrandService
 from my_home_server.services.product_service import ProductService
 from my_home_server.services.product_type_service import ProductTypeService
 from my_home_server.services.purchase_list_service import PurchaseListService
+from my_home_server.services.purchase_service import PurchaseService
 from my_home_server.services.user_group_service import UserGroupService
 from my_home_server.services.user_service import UserService
 
@@ -57,6 +58,8 @@ class AppModule(Module):
         dependencies.append(user_group_service)
         user_service = UserService(user_dao, user_group_service)
         dependencies.append(user_service)
+        purchase_service = PurchaseService(purchase_dao, purchase_list_service, product_service)
+        dependencies.append(purchase_service)
 
         for instance in dependencies:
             binder.bind(type(instance), to=instance, scope=singleton)

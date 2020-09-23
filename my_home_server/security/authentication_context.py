@@ -11,9 +11,5 @@ class AuthenticationContext(object):
         AuthenticationContext.__authentication_context.current_user = user
 
     @staticmethod
-    def get_context():
-        return AuthenticationContext.__authentication_context
-
-    @staticmethod
     def get_current_user() -> User:
         return AuthenticationContext.__authentication_context.current_user

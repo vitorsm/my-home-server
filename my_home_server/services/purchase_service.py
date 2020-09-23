@@ -24,6 +24,8 @@ class PurchaseService(object):
 
     @transaction
     def create(self, purchase: Purchase) -> Purchase:
+        purchase.id = None
+
         purchase.created_by = AuthenticationContext.get_current_user()
         purchase.created_at = datetime.utcnow()
 
@@ -81,3 +83,6 @@ class PurchaseService(object):
 
     def find_all(self) -> List[Purchase]:
         return self.purchase_dao.find_all_by_user(AuthenticationContext.get_current_user())
+
+    def commit(self):
+        self.purchase_dao.commit()

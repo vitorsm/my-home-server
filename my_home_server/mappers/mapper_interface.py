@@ -39,7 +39,7 @@ class MapperInterface(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     def generic_validate_dto(self, dto: dict, required_fields: List[str], entity_name: str):
-        if not dto:
+        if dto is None:
             raise InvalidDTOException(entity_name, None)
 
         if required_fields:

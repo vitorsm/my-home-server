@@ -17,7 +17,7 @@ class TestPurchaseListService(BaseTest):
         self.assertIsNone(self.service.find_by_id(1111))
 
     def test_find_by_id_without_permission(self):
-        self.assertIsNone(self.service.find_by_id(7))
+        self.assertIsNone(self.service.find_by_id(6))
 
     def test_find_by_id(self):
         purchase_list = self.service.find_by_id(1)
@@ -219,7 +219,7 @@ class TestPurchaseListService(BaseTest):
         self.assertIsNone(self.db.session.query(PurchaseList).get(4))
 
     def test_find_all(self):
-        user = self.db.session.query(User).get(4)
+        user = self.db.session.query(User).get(5)
         AuthenticationContext.init_context(user)
 
         purchase_lists = self.service.find_all()
