@@ -23,6 +23,17 @@ class ProductService(object):
         product.created_at = datetime.utcnow()
         product.created_by = AuthenticationContext.get_current_user()
 
+        brand = self.brand_service.find_or_create(dto.get("brand"))
+        product_type = self.product_type_service.find_or_create(dto.get("product_type"))
+
+        if brand and product.brand and not product.brand.id:
+            self.product_dao.expunge(product.brand)
+        if product_type and product.product_type and not product.product_type.id:
+            self.product_dao.expunge(product.product_type)
+
+        product.brand = brand
+        product.product_type = product_type
+
         self.product_dao.add(product)
 
         return product
@@ -37,8 +48,16 @@ class ProductService(object):
 
         product = self.mapper.to_object(dto, product)
 
-        product.brand = self.brand_service.find_or_create(dto.get("brand"))
-        product.product_type = self.product_type_service.find_or_create(dto.get("product_type"))
+        if product.brand and product.brand.id:
+            self.product_dao.expunge(product.brand)
+        if product.product_type and product.product_type.id:
+            self.product_dao.expunge(product.product_type)
+
+        brand = self.brand_service.find_or_create(dto.get("brand"))
+        product_type = self.product_type_service.find_or_create(dto.get("product_type"))
+
+        product.brand = brand
+        product.product_type = product_type
 
         self.product_dao.commit()
 
@@ -54,6 +73,9 @@ class ProductService(object):
         return self.product_dao.find_by_id(product_id, AuthenticationContext.get_current_user())
 
     def find_or_create(self, dto: dict) -> Product:
+        if not dto.get("id"):
+            return None
+
         product = self.product_dao.find_by_id(dto.get("id"), AuthenticationContext.get_current_user())
 
         if not product:

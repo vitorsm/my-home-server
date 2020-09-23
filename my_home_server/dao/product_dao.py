@@ -16,4 +16,4 @@ class ProductDAO(DAO):
     def find_by_id(self, product_id: int, current_user: User) -> Optional[Product]:
         return self.db.session.query(Product).\
             filter(Product.id == product_id).filter(or_(Product.created_by == current_user,
-                                                        Product.is_private == false())).all()
+                                                        Product.is_private == false())).first()

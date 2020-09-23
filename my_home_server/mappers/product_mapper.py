@@ -36,13 +36,16 @@ class ProductMapper(MapperInterface):
         product.id = dto.get("id")
         product.name = dto.get("name")
         product.image_url = dto.get("image_url")
-        product.is_private = dto.get("is_private")
         product.brand = self.brand_mapper.to_object(dto.get("brand"))
         product.product_type = self.product_type_mapper.to_object(dto.get("product_type"))
 
         if not loaded_object:
             product.created_at = dto.get("created_at")
             product.created_by = self.user_mapper.to_object(dto.get("created_by"))
+            product.is_private = dto.get("is_private")
+        else:
+            product.is_private = dto.get("is_private") if dto.get("is_private") is not None \
+                else loaded_object.is_private
 
         return product
 

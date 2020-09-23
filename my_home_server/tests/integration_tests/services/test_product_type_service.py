@@ -1,6 +1,8 @@
 from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
 from my_home_server.exceptions.object_not_found import ObjectNotFoundException
 from my_home_server.models.product_type import ProductType
+from my_home_server.models.user import User
+from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.services.product_type_service import ProductTypeService
 from my_home_server.tests.integration_tests.base_test import BaseTest
 
@@ -17,10 +19,13 @@ class TestProductTypeService(BaseTest):
         self.assertEqual(1, self.service.find_by_id(1).id)
 
     def test_find_all(self):
+        user = self.db.session.query(User).get(4)
+        AuthenticationContext.init_context(user)
+
         product_types = self.service.find_all()
 
         self.assertEqual(6, len(product_types))
-        self.assertNotIn(2, [p.id for p in product_types])
+        self.assertNotIn(3, [p.id for p in product_types])
 
     def test_create_by_dto_without_name(self):
         dto = {

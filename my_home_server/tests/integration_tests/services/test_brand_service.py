@@ -114,13 +114,13 @@ class TestBrandService(BaseTest):
         self.assertNotEqual("other", brand.name)
 
     def test_find_all(self):
-        user = self.db.session.query(User).get(3)
+        user = self.db.session.query(User).get(4)
         AuthenticationContext.init_context(user)
 
         brands = self.service.find_all()
 
-        self.assertEqual(5, len(brands))
-        self.assertEqual({100, 102, 103, 106, 107}, set([b.id for b in brands]))
+        self.assertEqual(8, len(brands))
+        self.assertEqual({100, 102, 103, 106, 107, 108, 109, 110}, set([b.id for b in brands]))
 
     def test_delete_by_id_without_permission(self):
         with self.assertRaises(ObjectNotFoundException) as exception:
