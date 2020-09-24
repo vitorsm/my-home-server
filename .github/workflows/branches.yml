@@ -22,6 +22,7 @@ jobs:
 
   upload-coverage-data:
     runs-on: ubuntu-latest
+    needs: [test]
     env:
       PYTHON: '3.8'
     steps:
@@ -32,18 +33,18 @@ jobs:
           python-version: 3.8
 
       - name: Generate coverage report
-          run: |
-            pip3 install coverage
-            pip3 install pytest-cov
-            cd my_home_server/tests/
-            PYTHONPATH=../../ coverage run --branch --source=../ --omit=./* -m unittest discover -s .
-            coverage xml
+        run: |
+          pip3 install coverage
+          pip3 install pytest-cov
+          cd my_home_server/tests/
+          PYTHONPATH=../../ coverage run --branch --source=../ --omit=./* -m unittest discover -s .
+          coverage xml
 
       - name: Upload coverage to Codecov
-          uses: codecov/codecov-action@v1
-          with:
-            token: ${{ secrets.CODECOV_TOKEN }}
-            file: ./coverage.xml
-            flags: unit-integ-tests
-            name: upload-coverage-data
-            path_to_write_report: ./coverage/codecov_report.gz
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unit-integ-tests
+          name: upload-coverage-data
+          path_to_write_report: ./coverage/codecov_report.gz
