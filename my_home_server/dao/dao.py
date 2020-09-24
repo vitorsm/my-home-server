@@ -36,19 +36,6 @@ class DAO(object):
             except IntegrityError as ex:
                 self.__handle_integrity_error(ex, type(entity).__name__)
 
-    def add_from_list(self, entity_list: List[object], commit: bool = False):
-        if not entity_list or not len(entity_list):
-            return
-
-        for entity in entity_list:
-            self.db.session.add(entity)
-
-        if commit:
-            try:
-                self.commit(raise_integrity_error=True)
-            except IntegrityError as ex:
-                self.__handle_integrity_error(ex, type(entity_list[0]).__name__)
-
     def update(self, entity: object, commit: bool = False):
         if entity not in self.db.session:
             self.db.session.add(entity)
