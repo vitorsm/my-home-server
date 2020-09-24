@@ -36,7 +36,7 @@ jobs:
         run: |
           sudo pip3 install coverage
           sudo pip3 install pytest-cov
-          sudo cd my_home_server/tests/
+          cd my_home_server/tests/
           sudo PYTHONPATH=../../ coverage run --branch --source=../ --omit=./* -m unittest discover -s .
           sudo coverage xml
 
