@@ -52,6 +52,10 @@ class ProductService(object):
         if not new_product:
             new_product = self.create(product)
         else:
+            if product.product_type:
+                self.product_dao.expunge(product.product_type.parent_product_type)
+
+            self.product_dao.expunge(product.product_type)
             self.product_dao.expunge(product)
 
         return new_product

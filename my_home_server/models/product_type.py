@@ -15,11 +15,13 @@ class ProductType(Base):
     created_by_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
-    parent_product_type = relationship("ProductType", single_parent=True, foreign_keys=[parent_product_type_id],
-                                       remote_side=[parent_product_type_id], uselist=False,
-                                       cascade="all, delete-orphan")
+    parent_product_type = relationship("ProductType", remote_side=[id])
+    product_type_children = relationship("ProductType", cascade="all, delete-orphan")
 
     created_by = relationship("User", lazy="select")
+
+    def __init__(self):
+        print(self)
 
     def __eq__(self, other):
         return type(other) == ProductType and self.id == other.id

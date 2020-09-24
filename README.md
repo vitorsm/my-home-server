@@ -123,3 +123,5 @@ class MapperInterface(metaclass=abc.ABCMeta):
 
 
 ## Adding new entity functions
+
+## Adding features

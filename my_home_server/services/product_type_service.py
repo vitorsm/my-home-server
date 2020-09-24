@@ -43,9 +43,8 @@ class ProductTypeService(object):
         if product_type.parent_product_type:
             if product_type.parent_product_type.id:
                 parent_id = product_type.parent_product_type.id
-                if is_update:
-                    self.product_type_dao.expunge(product_type.parent_product_type)
-                    product_type.parent_product_type = None
+                self.product_type_dao.expunge(product_type.parent_product_type)
+                product_type.parent_product_type = None
                 product_type.parent_product_type = self.find_by_id(parent_id)
 
             else:
