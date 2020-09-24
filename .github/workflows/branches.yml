@@ -46,7 +46,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: my-home-server/my_home_server/tests/coverage.xml
+          file: my_home_server/tests/coverage.xml
           flags: unit-integ-tests
           name: upload-coverage-data
           path_to_write_report: ./coverage/codecov_report.gz
