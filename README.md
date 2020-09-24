@@ -4,6 +4,9 @@ Python restful server of MyHome project.
 
 It is a Flask application and use SQLAlchemy as a ORM.
 
+[![codecov](https://codecov.io/gh/vitorsm/my-home-server/branch/master/graph/badge.svg)](https://codecov.io/gh/vitorsm/my-home-server)
+
+
 ## Requirements
 
 These directories must exist, and the user that will execute the my-home-server should be permission to write it:
