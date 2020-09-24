@@ -8,6 +8,8 @@ from flask_injector import FlaskInjector
 from injector import Injector
 from flask_testing import TestCase
 
+
+
 from my_home_server.configs.dependencies_injector import AppModule
 from my_home_server.models.base_models import Base
 from my_home_server.models.user import User
@@ -27,6 +29,8 @@ class BaseTest(TestCase):
 
     app: Flask
     db: SQLAlchemy
+    jwt: JWT
+    token: str
 
     def create_app(self):
         self.app = Flask(__name__)
@@ -47,7 +51,7 @@ class BaseTest(TestCase):
             return authentication_utils.identity(payload, user_service)
 
         self.db = SQLAlchemy(self.app, session_options={"autoflush": False})
-        jwt = JWT(self.app, authenticate, identity)
+        self.jwt = JWT(self.app, authenticate, identity)
 
         self.dependency_injector = Injector([AppModule(self.app, self.db)])
         FlaskInjector(app=self.app, injector=self.dependency_injector)
@@ -62,6 +66,8 @@ class BaseTest(TestCase):
         self.db.session.add(default_user)
         self.initial_load()
         self.db.session.commit()
+
+        self.token = "JWT " + self.jwt.jwt_encode_callback(default_user).decode()
 
         AuthenticationContext.init_context(default_user)
 
@@ -105,3 +111,6 @@ class BaseTest(TestCase):
             path = path[:index]
 
         return path + "/" if path.endswith("/my_home_server") else path + "/my_home_server/"
+
+    def get_authentication_header(self) -> dict:
+        return {"Authorization": self.token}

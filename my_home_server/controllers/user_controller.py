@@ -21,13 +21,6 @@ def get_user(user_id: int, user_service: UserService, user_mapper: UserMapper):
     return jsonify(user_mapper.to_dto(user))
 
 
-@controller.route("/")
-@jwt_required()
-@authentication_utils.set_authentication_context
-def get_current_user(user_mapper: UserMapper):
-    return jsonify(user_mapper.to_dto(AuthenticationContext.get_current_user()))
-
-
 @controller.route("/", methods=['POST'])
 def create_user(user_service: UserService, user_mapper: UserMapper):
     user_dto = request.json

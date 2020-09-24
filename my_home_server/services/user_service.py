@@ -65,3 +65,5 @@ class UserService(object):
             user.password = PasswordEncryption.encrypt_password(dto.get("password"))
 
         self.user_dao.update(user, commit=True)
+
+        return user
