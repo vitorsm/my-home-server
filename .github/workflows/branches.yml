@@ -49,4 +49,3 @@ jobs:
           file: my_home_server/tests/coverage.xml
           flags: unit-integ-tests
           name: upload-coverage-data
-          path_to_write_report: ./coverage/codecov_report.gz
