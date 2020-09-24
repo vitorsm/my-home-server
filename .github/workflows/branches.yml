@@ -35,7 +35,7 @@ jobs:
       - name: Generate coverage report
         run: |
           pip3 install coverage
-          pip3 install pytest-cov
+          pip3 install -r requirements.txt
           cd my_home_server/tests/
           sudo mkdir /var/log/myhome-server
           sudo chmod 777 /var/log/myhome-server
