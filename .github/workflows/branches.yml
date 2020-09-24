@@ -34,11 +34,11 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          pip3 install coverage
-          pip3 install pytest-cov
-          cd my_home_server/tests/
-          PYTHONPATH=../../ coverage run --branch --source=../ --omit=./* -m unittest discover -s .
-          coverage xml
+          sudo pip3 install coverage
+          sudo pip3 install pytest-cov
+          sudo cd my_home_server/tests/
+          sudo PYTHONPATH=../../ coverage run --branch --source=../ --omit=./* -m unittest discover -s .
+          sudo coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
