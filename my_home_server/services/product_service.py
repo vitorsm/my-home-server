@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import List, Optional
 
 from my_home_server.dao.product_dao import ProductDAO
-from my_home_server.exceptions.object_not_found import ObjectNotFoundException
+from my_home_server.exceptions.error_code import ErrorCode
+from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.mappers.mapper import Mapper
 from my_home_server.models.product import Product
 from my_home_server.security.authentication_context import AuthenticationContext
@@ -62,7 +63,8 @@ class ProductService(object):
         product = self.product_dao.find_by_id(dto.get("id"), AuthenticationContext.get_current_user())
 
         if not product:
-            raise ObjectNotFoundException(Product.__name__, {"id": dto.get("id")})
+            raise ObjectNotFoundException(ErrorCode.PRODUCT_TO_UPDATE_NOT_FOUND,
+                                          Product.__name__, {"id": dto.get("id")})
 
         product = self.mapper.to_object(dto, product)
 
@@ -86,7 +88,7 @@ class ProductService(object):
         product = self.product_dao.find_by_id(product_id, AuthenticationContext.get_current_user())
 
         if not product:
-            raise ObjectNotFoundException(Product.__name__, {"id": product_id})
+            raise ObjectNotFoundException(ErrorCode.PRODUCT_TO_DELETE_NOT_FOUND, Product.__name__, {"id": product_id})
 
         self.product_dao.delete(product)
 

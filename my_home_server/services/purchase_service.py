@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import Optional, List
 
 from my_home_server.dao.purchase_dao import PurchaseDAO
-from my_home_server.exceptions.object_not_found import ObjectNotFoundException
+from my_home_server.exceptions.error_code import ErrorCode
+from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.mappers.mapper import Mapper
 from my_home_server.models.purchase import Purchase
 from my_home_server.security.authentication_context import AuthenticationContext
@@ -53,7 +54,8 @@ class PurchaseService(object):
         purchase = self.find_by_id(dto.get("id"))
 
         if not purchase:
-            raise ObjectNotFoundException(Purchase.__name__, {"id": dto.get("id")})
+            raise ObjectNotFoundException(ErrorCode.PURCHASE_TO_UPDATE_NOT_FOUND,
+                                          Purchase.__name__, {"id": dto.get("id")})
 
         purchase = self.mapper.to_object(dto, purchase)
 
@@ -70,7 +72,8 @@ class PurchaseService(object):
         purchase = self.find_by_id(purchase_id)
 
         if not purchase:
-            raise ObjectNotFoundException(Purchase.__name__, {"id": purchase_id})
+            raise ObjectNotFoundException(ErrorCode.PURCHASE_TO_DELETE_NOT_FOUND,
+                                          Purchase.__name__, {"id": purchase_id})
 
         self.purchase_dao.delete(purchase)
 

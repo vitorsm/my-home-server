@@ -1,6 +1,6 @@
 import unittest
 
-from my_home_server.exceptions.no_mapper import NoMapperException
+from my_home_server.exceptions.no_mapper_exception import NoMapperException
 from my_home_server.mappers.mapper import Mapper
 
 

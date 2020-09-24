@@ -5,7 +5,7 @@ from my_home_server.dao.user_dao import UserDAO
 from my_home_server.exceptions.authentication_exception import AuthenticationException
 from my_home_server.exceptions.duplicate_entry_exception import DuplicateEntryException
 from my_home_server.exceptions.error_code import ErrorCode
-from my_home_server.exceptions.object_not_found import ObjectNotFoundException
+from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.exceptions.permission_exception import PermissionException, Actions
 from my_home_server.mappers.mapper import Mapper
 from my_home_server.models.user import User
@@ -27,7 +27,7 @@ class UserService(object):
         user = self.user_dao.find_by_login(login)
 
         if not user or not PasswordEncryption.check_encrypted_password(password, user.password):
-            raise AuthenticationException(login)
+            raise AuthenticationException(ErrorCode.INVALID_CREDENTIALS, login)
 
         return user
 
@@ -53,7 +53,8 @@ class UserService(object):
         user = self.find_by_id(dto.get("id"))
 
         if not user:
-            raise ObjectNotFoundException(User.__name__, {"id": dto.get("id")})
+            raise ObjectNotFoundException(ErrorCode.USER_TO_UPDATE_NOT_FOUND,
+                                          User.__name__, {"id": dto.get("id")})
 
         if user != AuthenticationContext.get_current_user():
             raise PermissionException(ErrorCode.UPDATE_USER_PERMISSION, User.__name__, Actions.UPDATE)

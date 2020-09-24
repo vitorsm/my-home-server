@@ -3,7 +3,8 @@ from functools import wraps
 from typing import Optional, List
 
 from my_home_server.dao.purchase_list_dao import PurchaseListDAO
-from my_home_server.exceptions.object_not_found import ObjectNotFoundException
+from my_home_server.exceptions.error_code import ErrorCode
+from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.mappers.mapper import Mapper
 from my_home_server.models.purchase_list import PurchaseList
 from my_home_server.security.authentication_context import AuthenticationContext
@@ -51,7 +52,8 @@ class PurchaseListService(object):
         purchase_list = self.find_by_id(dto.get("id"))
 
         if not purchase_list:
-            raise ObjectNotFoundException(PurchaseList.__name__, {"id": dto.get("id")})
+            raise ObjectNotFoundException(ErrorCode.PURCHASE_LIST_TO_UPDATE_NOT_FOUND,
+                                          PurchaseList.__name__, {"id": dto.get("id")})
 
         self.mapper.to_object(dto, purchase_list)
 
@@ -64,7 +66,8 @@ class PurchaseListService(object):
         purchase_list = self.find_by_id(purchase_list_id)
 
         if not purchase_list:
-            raise ObjectNotFoundException(PurchaseList.__name__, {"id": purchase_list_id})
+            raise ObjectNotFoundException(ErrorCode.PURCHASE_LIST_TO_DELETE_NOT_FOUND,
+                                          PurchaseList.__name__, {"id": purchase_list_id})
 
         self.purchase_list_dao.delete(purchase_list)
 

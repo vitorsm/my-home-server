@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError, InvalidRequestError
 
 from my_home_server.exceptions.duplicate_entry_exception import DuplicateEntryException
 import my_home_server.utils.sql_utils as sql_utils
+from my_home_server.exceptions.error_code import ErrorCode
 
 
 class DAO(object):
@@ -73,7 +74,7 @@ class DAO(object):
             if exception.params and len(exception.params) > index >= 0:
                 value = exception.params[index]
 
-            raise DuplicateEntryException(entity, field, value)
+            raise DuplicateEntryException(ErrorCode.GENERIC_EXCEPTION, entity, field, value)
 
         raise exception
 

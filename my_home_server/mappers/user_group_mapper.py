@@ -1,10 +1,18 @@
 from typing import Optional
 
+from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.mappers.mapper_interface import MapperInterface
 from my_home_server.models.user_group import UserGroup
 
 
 class UserGroupMapper(MapperInterface):
+
+    def get_error_code_when_dto_invalid_to_insert(self):
+        return ErrorCode.GENERIC_EXCEPTION
+
+    def get_error_code_when_dto_invalid_to_update(self):
+        return ErrorCode.GENERIC_EXCEPTION
+
     def to_dto(self, user_group: UserGroup) -> Optional[dict]:
         if not user_group:
             return None

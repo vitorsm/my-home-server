@@ -1,5 +1,5 @@
 from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
-from my_home_server.exceptions.object_not_found import ObjectNotFoundException
+from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.models.purchase import Purchase
 from my_home_server.models.purchase_list import PurchaseList
 from my_home_server.models.user import User

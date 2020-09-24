@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
-from my_home_server.exceptions.no_mapper import NoMapperException
+from my_home_server.exceptions.no_mapper_exception import NoMapperException
 from my_home_server.mappers.brand_mapper import BrandMapper
 from my_home_server.mappers.mapper_interface import MapperInterface
 from my_home_server.mappers.product_mapper import ProductMapper

@@ -2,7 +2,7 @@ from my_home_server.exceptions.authentication_exception import AuthenticationExc
 from my_home_server.exceptions.duplicate_entry_exception import DuplicateEntryException
 from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
-from my_home_server.exceptions.object_not_found import ObjectNotFoundException
+from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.exceptions.permission_exception import PermissionException, Actions
 from my_home_server.models.user import User
 from my_home_server.security.authentication_context import AuthenticationContext

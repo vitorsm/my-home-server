@@ -10,13 +10,7 @@ from my_home_server.configs import config
 from my_home_server.configs.dependencies_injector import AppModule
 
 import my_home_server.security.authentication_utils as authentication_utils
-
-import my_home_server.controllers.user_controller as user_controller
-import my_home_server.controllers.brand_controller as brand_controller
-import my_home_server.controllers.product_type_controller as product_type_controller
-import my_home_server.controllers.product_controller as product_controller
-import my_home_server.controllers.purchase_list_controller as purchase_list_controller
-import my_home_server.controllers.purchase_controller as purchase_controller
+import my_home_server.configs.controllers_register as controllers_register
 
 from my_home_server.services.user_service import UserService
 
@@ -42,12 +36,7 @@ jwt = JWT(app, authenticate, identity)
 
 dependency_injector = Injector([AppModule(app)])
 
-app.register_blueprint(user_controller.controller)
-app.register_blueprint(brand_controller.controller)
-app.register_blueprint(product_type_controller.controller)
-app.register_blueprint(product_controller.controller)
-app.register_blueprint(purchase_list_controller.controller)
-app.register_blueprint(purchase_controller.controller)
+controllers_register.register_controllers(app)
 
 
 if __name__ == "__main__":

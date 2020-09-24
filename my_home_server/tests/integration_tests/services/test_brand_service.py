@@ -1,6 +1,6 @@
 
 from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
-from my_home_server.exceptions.object_not_found import ObjectNotFoundException
+from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.models.brand import Brand
 from my_home_server.models.user import User
 from my_home_server.security.authentication_context import AuthenticationContext

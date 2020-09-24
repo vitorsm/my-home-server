@@ -1,12 +1,16 @@
 from functools import wraps
 
+from my_home_server.exceptions.authentication_exception import AuthenticationException
 from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.services.user_service import UserService
-from flask_jwt import current_identity
+from flask_jwt import current_identity, JWTError
 
 
 def authenticate(login: str, password: str, user_service: UserService):
-    return user_service.authenticate(login, password)
+    try:
+        return user_service.authenticate(login, password)
+    except AuthenticationException as exception:
+        raise JWTError(exception.get_title(), exception.message)
 
 
 def identity(payload: dict, user_service: UserService):

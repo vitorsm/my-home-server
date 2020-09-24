@@ -1,5 +1,6 @@
 from typing import Optional
 
+from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.mappers.brand_mapper import BrandMapper
 from my_home_server.mappers.mapper_interface import MapperInterface
 from my_home_server.mappers.product_type_mapper import ProductTypeMapper
@@ -12,6 +13,12 @@ class ProductMapper(MapperInterface):
         self.product_type_mapper = ProductTypeMapper()
         self.brand_mapper = BrandMapper()
         self.user_mapper = UserMapper()
+
+    def get_error_code_when_dto_invalid_to_insert(self):
+        return ErrorCode.INVALID_INPUT_CREATE_PRODUCT
+
+    def get_error_code_when_dto_invalid_to_update(self):
+        return ErrorCode.INVALID_INPUT_UPDATE_PRODUCT
 
     def to_dto(self, obj: Product) -> Optional[dict]:
         if not obj:

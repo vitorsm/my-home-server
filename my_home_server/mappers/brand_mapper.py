@@ -1,14 +1,20 @@
 from typing import Optional
 
+from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.mappers.mapper_interface import MapperInterface
 from my_home_server.mappers.user_mapper import UserMapper
 from my_home_server.models.brand import Brand
 
 
 class BrandMapper(MapperInterface):
-
     def __init__(self):
         self.user_mapper = UserMapper()
+
+    def get_error_code_when_dto_invalid_to_insert(self):
+        return ErrorCode.INVALID_INPUT_CREATE_BRAND
+
+    def get_error_code_when_dto_invalid_to_update(self):
+        return ErrorCode.INVALID_INPUT_UPDATE_BRAND
 
     def to_object(self, dto: dict, loaded_object: Brand = None) -> Optional[Brand]:
         if not dto:
@@ -44,6 +50,6 @@ class BrandMapper(MapperInterface):
             "id": brand.id,
             "name": brand.name,
             "is_private": brand.is_private,
-            "created_by": {},
+            "created_by": self.user_mapper.to_dto(brand.created_by),
             "created_at": brand.created_at
         }

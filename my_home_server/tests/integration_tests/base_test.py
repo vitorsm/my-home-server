@@ -1,16 +1,23 @@
 import os
+
+from flask_jwt import JWT
 from flask_sqlalchemy import SQLAlchemy
-from flask_testing import TestCase
+
 from flask import Flask
 from flask_injector import FlaskInjector
 from injector import Injector
+from flask_testing import TestCase
 
 from my_home_server.configs.dependencies_injector import AppModule
 from my_home_server.models.base_models import Base
 from my_home_server.models.user import User
 from my_home_server.models.user_group import UserGroup
+from my_home_server.security import authentication_utils
 from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.security.password_encryption import PasswordEncryption
+
+import my_home_server.configs.controllers_register as controllers_register
+from my_home_server.services.user_service import UserService
 
 
 class BaseTest(TestCase):
@@ -23,12 +30,24 @@ class BaseTest(TestCase):
 
     def create_app(self):
         self.app = Flask(__name__)
+        self.app.config['TESTING'] = True
         self.app.config['SQLALCHEMY_DATABASE_URI'] = self.SQLALCHEMY_DATABASE_URI
         self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         self.app.config['SECRET_KEY'] = self.ENCRYPT_SECRET_KEY
         self.app.config['JWT_AUTH_URL_RULE'] = "/api/auth/authenticate"
 
+        controllers_register.register_controllers(self.app)
+
+        def authenticate(login: str, password: str):
+            user_service = self.dependency_injector.get(UserService)
+            return authentication_utils.authenticate(login, password, user_service)
+
+        def identity(payload: dict):
+            user_service = self.dependency_injector.get(UserService)
+            return authentication_utils.identity(payload, user_service)
+
         self.db = SQLAlchemy(self.app, session_options={"autoflush": False})
+        jwt = JWT(self.app, authenticate, identity)
 
         self.dependency_injector = Injector([AppModule(self.app, self.db)])
         FlaskInjector(app=self.app, injector=self.dependency_injector)

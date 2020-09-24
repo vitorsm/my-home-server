@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.mappers.mapper_interface import MapperInterface
 from my_home_server.mappers.product_mapper import ProductMapper
 from my_home_server.mappers.user_mapper import UserMapper
@@ -11,6 +12,12 @@ class PurchaseListMapper(MapperInterface):
     def __init__(self):
         self.user_mapper = UserMapper()
         self.product_mapper = ProductMapper()
+
+    def get_error_code_when_dto_invalid_to_insert(self):
+        return ErrorCode.INVALID_INPUT_CREATE_PURCHASE_LIST
+
+    def get_error_code_when_dto_invalid_to_update(self):
+        return ErrorCode.INVALID_INPUT_UPDATE_PURCHASE_LIST
 
     def to_dto(self, obj: PurchaseList) -> Optional[dict]:
         if not obj:

@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import List, Optional
 
 from my_home_server.dao.brand_dao import BrandDAO
-from my_home_server.exceptions.object_not_found import ObjectNotFoundException
+from my_home_server.exceptions.error_code import ErrorCode
+from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.mappers.mapper import Mapper
 from my_home_server.models.brand import Brand
 from my_home_server.security.authentication_context import AuthenticationContext
@@ -56,7 +57,7 @@ class BrandService(object):
         brand = self.brand_dao.find_by_id(dto.get("id"), AuthenticationContext.get_current_user())
 
         if not brand:
-            raise ObjectNotFoundException(Brand.__name__, {"id": dto.get("id")})
+            raise ObjectNotFoundException(ErrorCode.BRAND_TO_UPDATE_NOT_FOUND,  Brand.__name__, {"id": dto.get("id")})
 
         self.mapper.to_object(dto, brand)
         self.brand_dao.update(brand)
@@ -68,7 +69,7 @@ class BrandService(object):
         brand = self.find_by_id(brand_id)
 
         if not brand:
-            raise ObjectNotFoundException(Brand.__name__, {"id": brand_id})
+            raise ObjectNotFoundException(ErrorCode.BRAND_TO_DELETE_NOT_FOUND, Brand.__name__, {"id": brand_id})
 
         self.brand_dao.delete(brand)
 
