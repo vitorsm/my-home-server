@@ -28,7 +28,7 @@ class PurchaseMapper(MapperInterface):
         return {
             "id": obj.id,
             "name": obj.name,
-            "created_at": obj.created_by,
+            "created_at": obj.created_at,
             "created_by": self.user_mapper.to_dto(obj.created_by),
             "purchase_list": self.purchase_list_mapper.to_dto(obj.purchase_list),
             "products": self.__products_to_dto(obj.products)

@@ -67,6 +67,8 @@ class PurchaseService(object):
 
         self.purchase_dao.update(purchase)
 
+        return purchase
+
     @transaction
     def delete_by_id(self, purchase_id: int):
         purchase = self.find_by_id(purchase_id)
