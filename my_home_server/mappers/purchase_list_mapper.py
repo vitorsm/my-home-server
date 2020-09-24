@@ -28,7 +28,7 @@ class PurchaseListMapper(MapperInterface):
             "name": obj.name,
             "created_at": obj.created_at,
             "created_by": self.user_mapper.to_dto(obj.created_by),
-            "purchase_products": self.__products_to_dto(obj.purchase_products)
+            "products": self.__products_to_dto(obj.purchase_products)
         }
 
     def to_object(self, dto: dict, loaded_object: PurchaseList = None) -> Optional[PurchaseList]:
@@ -38,7 +38,7 @@ class PurchaseListMapper(MapperInterface):
         purchase_list = loaded_object if loaded_object else PurchaseList()
         purchase_list.id = dto.get("id")
         purchase_list.name = dto.get("name")
-        purchase_list.purchase_products = self.__products_to_obj(dto.get("purchase_products"), purchase_list)
+        purchase_list.purchase_products = self.__products_to_obj(dto.get("products"), purchase_list)
 
         if not loaded_object:
             purchase_list.created_by = self.user_mapper.to_object(dto.get("created_by"))
@@ -72,7 +72,7 @@ class PurchaseListMapper(MapperInterface):
     def __products_to_dto(self, purchase_products: List[PurchaseListProduct]) -> List[dict]:
         products = list()
 
-        if products:
+        if purchase_products:
             for purchase_product in purchase_products:
                 dto = self.product_mapper.to_dto(purchase_product.product)
 

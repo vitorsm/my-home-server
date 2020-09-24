@@ -30,9 +30,9 @@ class TestProductController(BaseTest):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(14, len(response_dto))
-        self.assertEqual(100, response_dto[0]["id"])
-        self.assertEqual("Brand 1", response_dto[0]["name"])
-        self.assertEqual(False, response_dto[0]["is_private"])
+        self.assertEqual(1, response_dto[0]["id"])
+        self.assertEqual("Product 1", response_dto[0]["name"])
+        self.assertEqual(True, response_dto[0]["is_private"])
         self.assertEqual(1, response_dto[0]["created_by"]["id"])
 
     def test_find_all_without_token(self):
@@ -95,6 +95,19 @@ class TestProductController(BaseTest):
 
         response = self.client.put("/api/product/", json=dto)
         self.assertEqual(403, response.status_code)
+
+    def test_update(self):
+
+        dto = {
+            "id": 1,
+            "name": "new_name"
+        }
+
+        response = self.client.put("/api/product/", json=dto, headers=self.get_authentication_header())
+        response_dto = json.loads(response.data.decode())
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("new_name", response_dto["name"])
 
     def test_delete(self):
         response = self.client.delete("/api/product/1", headers=self.get_authentication_header())

@@ -61,6 +61,8 @@ class PurchaseListService(object):
 
         self.purchase_list_dao.update(purchase_list)
 
+        return purchase_list
+
     @transaction
     def delete_by_id(self, purchase_list_id: int):
         purchase_list = self.find_by_id(purchase_list_id)

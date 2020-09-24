@@ -29,7 +29,7 @@ class TestPurchaseListService(BaseTest):
     def test_create_from_dto(self):
         dto = {
             "name": "Test name",
-            "purchase_products": [
+            "products": [
                 {
                     "name": "new_name",
                     "product_type": {"id": 100, "name": "new_product_type"},
@@ -133,7 +133,7 @@ class TestPurchaseListService(BaseTest):
         dto = {
             "id": 3,
             "name": "Test name",
-            "purchase_products": [
+            "products": [
                 {
                     "id": 1111,
                     "name": "new_name",
