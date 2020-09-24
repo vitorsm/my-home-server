@@ -7,8 +7,6 @@ from my_home_server.tests.integration_tests.base_test import BaseTest
 
 
 class TestUserController(BaseTest):
-    def setUp(self):
-        super().setUp()
 
     def test_authenticate_endpoint_invalid_credentials(self):
         dto = {

@@ -16,8 +16,8 @@ errors_handler.fill_error_handlers_to_controller(controller)
 @controller.route("<path:user_id>")
 @jwt_required()
 @authentication_utils.set_authentication_context
-def get_user(user_id: int, user_service: UserService, user_mapper: UserMapper):
-    user = user_service.find_by_id(user_id)
+def get_user(user_id: str, user_service: UserService, user_mapper: UserMapper):
+    user = user_service.find_by_id(int(user_id))
     return jsonify(user_mapper.to_dto(user))
 
 

@@ -21,8 +21,8 @@ def get_all_brands(brand_service: BrandService, brand_mapper: BrandMapper):
 @controller.route("<path:brand_id>")
 @jwt_required()
 @authentication_utils.set_authentication_context
-def get_brand(brand_id: int, brand_service: BrandService, brand_mapper: BrandMapper):
-    brand = brand_service.find_by_id(brand_id)
+def get_brand(brand_id: str, brand_service: BrandService, brand_mapper: BrandMapper):
+    brand = brand_service.find_by_id(int(brand_id))
     return jsonify(brand_mapper.to_dto(brand))
 
 
@@ -47,6 +47,6 @@ def update_brand(brand_service: BrandService, brand_mapper: BrandMapper):
 @controller.route("<path:brand_id>", methods=['DELETE'])
 @jwt_required()
 @authentication_utils.set_authentication_context
-def delete_brand(brand_id: int, brand_service: BrandService):
-    brand_service.delete_by_id(brand_id)
+def delete_brand(brand_id: str, brand_service: BrandService):
+    brand_service.delete_by_id(int(brand_id))
     return {}, 200

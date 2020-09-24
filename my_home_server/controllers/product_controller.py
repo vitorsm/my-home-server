@@ -21,8 +21,8 @@ def get_all_products(product_service: ProductService, product_mapper: ProductMap
 @controller.route("<path:product_id>")
 @jwt_required()
 @authentication_utils.set_authentication_context
-def get_product(product_id: int, product_service: ProductService, product_mapper: ProductMapper):
-    product = product_service.find_by_id(product_id)
+def get_product(product_id: str, product_service: ProductService, product_mapper: ProductMapper):
+    product = product_service.find_by_id(int(product_id))
     return jsonify(product_mapper.to_dto(product))
 
 
@@ -47,6 +47,6 @@ def update_product(product_service: ProductService, product_mapper: ProductMappe
 @controller.route("<path:product_id>", methods=['DELETE'])
 @jwt_required()
 @authentication_utils.set_authentication_context
-def delete_product(product_id: int, product_service: ProductService):
-    product_service.delete_by_id(product_id)
+def delete_product(product_id: str, product_service: ProductService):
+    product_service.delete_by_id(str(product_id))
     return {}, 200

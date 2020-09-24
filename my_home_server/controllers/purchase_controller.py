@@ -21,8 +21,8 @@ def get_all_purchases(purchase_service: PurchaseService, purchase_mapper: Purcha
 @controller.route("<path:purchase_id>")
 @jwt_required()
 @authentication_utils.set_authentication_context
-def get_purchase(purchase_id: int, purchase_service: PurchaseService, purchase_mapper: PurchaseMapper):
-    purchase = purchase_service.find_by_id(purchase_id)
+def get_purchase(purchase_id: str, purchase_service: PurchaseService, purchase_mapper: PurchaseMapper):
+    purchase = purchase_service.find_by_id(int(purchase_id))
     return jsonify(purchase_mapper.to_dto(purchase))
 
 
@@ -47,6 +47,6 @@ def update_purchase(purchase_service: PurchaseService, purchase_mapper: Purchase
 @controller.route("<path:purchase_id>", methods=['DELETE'])
 @jwt_required()
 @authentication_utils.set_authentication_context
-def delete_purchase(purchase_id: int, purchase_service: PurchaseService):
-    purchase_service.delete_by_id(purchase_id)
+def delete_purchase(purchase_id: str, purchase_service: PurchaseService):
+    purchase_service.delete_by_id(int(purchase_id))
     return {}, 200

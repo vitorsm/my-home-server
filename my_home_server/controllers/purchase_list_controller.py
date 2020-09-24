@@ -21,9 +21,9 @@ def get_all_purchase_lists(purchase_list_service: PurchaseListService, purchase_
 @controller.route("<path:purchase_list_id>")
 @jwt_required()
 @authentication_utils.set_authentication_context
-def get_purchase_list(purchase_list_id: int, purchase_list_service: PurchaseListService,
+def get_purchase_list(purchase_list_id: str, purchase_list_service: PurchaseListService,
                       purchase_list_mapper: PurchaseListMapper):
-    purchase_list = purchase_list_service.find_by_id(purchase_list_id)
+    purchase_list = purchase_list_service.find_by_id(int(purchase_list_id))
     return jsonify(purchase_list_mapper.to_dto(purchase_list))
 
 
@@ -48,6 +48,6 @@ def update_purchase_list(purchase_list_service: PurchaseListService, purchase_li
 @controller.route("<path:purchase_list_id>", methods=['DELETE'])
 @jwt_required()
 @authentication_utils.set_authentication_context
-def delete_purchase_list(purchase_list_id: int, purchase_list_service: PurchaseListService):
-    purchase_list_service.delete_by_id(purchase_list_id)
+def delete_purchase_list(purchase_list_id: str, purchase_list_service: PurchaseListService):
+    purchase_list_service.delete_by_id(int(purchase_list_id))
     return {}, 200
