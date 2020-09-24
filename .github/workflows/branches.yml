@@ -38,6 +38,7 @@ jobs:
           pip3 install pytest-cov
           cd my_home_server/tests/
           sudo mkdir /var/log/myhome-server
+          sudo chmod 777 /var/log/myhome-server
           PYTHONPATH=../../ coverage run --branch --source=../ --omit=./* -m unittest discover -s .
           coverage xml
 
