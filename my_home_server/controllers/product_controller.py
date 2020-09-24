@@ -48,5 +48,5 @@ def update_product(product_service: ProductService, product_mapper: ProductMappe
 @jwt_required()
 @authentication_utils.set_authentication_context
 def delete_product(product_id: str, product_service: ProductService):
-    product_service.delete_by_id(str(product_id))
+    product_service.delete_by_id(int(product_id))
     return {}, 200
