@@ -8,10 +8,10 @@ from my_home_server.models.user_group import UserGroup
 class UserGroupMapper(MapperInterface):
 
     def get_error_code_when_dto_invalid_to_insert(self):
-        return ErrorCode.GENERIC_EXCEPTION
+        return ErrorCode.INVALID_INPUT_CREATE_USER_GROUP
 
     def get_error_code_when_dto_invalid_to_update(self):
-        return ErrorCode.GENERIC_EXCEPTION
+        return ErrorCode.INVALID_INPUT_UPDATE_USER_GROUP
 
     def to_dto(self, user_group: UserGroup) -> Optional[dict]:
         if not user_group:

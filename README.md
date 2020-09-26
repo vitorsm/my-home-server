@@ -1,5 +1,10 @@
 # my-home-server
-Python restful server of my home project.
+
+Python restful server of MyHome project.
+
+It is a Flask application and use SQLAlchemy as a ORM.
+
+[![codecov](https://codecov.io/gh/vitorsm/my-home-server/branch/master/graph/badge.svg)](https://codecov.io/gh/vitorsm/my-home-server)
 
 
 ## Requirements
@@ -121,7 +126,102 @@ class MapperInterface(metaclass=abc.ABCMeta):
 
 ## Dependency Injection
 
+The Flask-Injector was used to manage dependency injection. After the dependencies are register in the binder,
+the functions decorated with flask route can instantiate their dependencies automatically.
 
-## Adding new entity functions
+All DAO's and Services should be register in the binder. To register a new Service or DAO,
+insert it in the dependencies_injector.py.
 
-## Adding features
+
+## Adding entity CRUD or functions
+
+1. To create a new CRUD the first step is create the model. In this example, the model is ```User```.
+When a model will be used as foreign key in other model, is required use the same base model. So, to create a new model
+extends it of ```models.base_models.Base```:
+    ```
+    class User(Base):
+        __tablename__ = "user"
+        id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+        name = Column(String, nullable=False)
+        login = Column(String, nullable=False, unique=True)
+        password = Column(String, nullable=False)
+        user_group_id = Column(Integer, ForeignKey("user_group.id"), nullable=False)
+        created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    
+        user_group = relationship("UserGroup", lazy="select")
+    
+        def __eq__(self, other):
+            return other and self.id == other.id
+    
+        def __hash__(self):
+            return hash(self.id)
+    
+    ```
+
+    The ```__eq__``` function is used by SQLAlchemy to compare two objects.
+
+1. If this entity will be inserted from a HTTP request, prepare the mapper that will convert the json to object and the
+object to json. Create a class in ```mappers``` that extends ```MapperInterface```.
+
+    ```
+    class UserMapper(MapperInterface):
+        def __init__(self):
+            self.user_group_mapper = UserGroupMapper()
+        
+        [...]
+    ```
+   
+   To all services can get the mapper register it in the ```mappers.mapper.Mapper```.
+   
+1. Create the dao in ```dao``` extending from ```dao.dao.DAO```. The generic dao already have basic function to add,
+update and delete entities. Create the other required functions:
+
+    ```
+    class UserDAO(DAO):
+        def find_by_id(self, user_id: int) -> Optional[User]:
+            return self.db.session.query(User).get(user_id)
+    
+        def find_by_login(self, login: str) -> Optional[User]:
+            return self.db.session.query(User).filter(User.login == login).first()
+    ``` 
+   
+   Register the DAO in the ```configs.dependencies_injector.AppModule```
+   
+1. Create the service in ```services```. The service needs to get a dao instance. Receive the DAO in the constructor.
+If necessary to use ```@utils.sql_utils.transaction```, implement the ```commit``` function.
+This function will be responsible to commit all changes.
+
+    ```
+    class UserService(object):
+        def __init__(self, user_dao: UserDAO, user_group_service: UserGroupService):
+            self.user_dao = user_dao
+            self.user_group_service = user_group_service
+            self.mapper = Mapper.get_mapper(User.__name__)
+   
+        [...]
+   
+        def commit(self):
+            self.user_dao.commit()
+    ```
+   
+   Register the Service in the ```configs.dependencies_injector.AppModule```
+
+1. Create the controller in ```controllers``` to expose the functions.
+The controller will be a variable in this file instead a class.
+
+    ```
+    controller = Blueprint("user_controller", __name__, url_prefix="/api/user")
+    errors_handler.fill_error_handlers_to_controller(controller)
+    
+    
+    @controller.route("<path:user_id>")
+    @jwt_required()
+    @authentication_utils.set_authentication_context
+    def get_user(user_id: str, user_service: UserService, user_mapper: UserMapper):
+        user = user_service.find_by_id(int(user_id))
+        return jsonify(user_mapper.to_dto(user))
+
+    ```
+   
+   Register the controller in ```configs.controllers_register```
+   
