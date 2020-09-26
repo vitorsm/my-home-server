@@ -49,8 +49,11 @@ class DAO(object):
 
     @staticmethod
     def __handle_integrity_error(exception: IntegrityError, entity: str):
-        if "UNIQUE" in exception.orig.args[0]:
-            field = exception.orig.args[0].split(': ')[1]
+        if "UNIQUE" in exception.args[0] or "Duplicate" in exception.args[0]:
+            if "UNIQUE" in exception.args[0]:
+                field = exception.args[0].split(': ')[1]
+            else:
+                field = exception.args[0].split('\' for key \'')[1][:-3].split('.')[1]
             value = None
 
             if "." in field:
@@ -59,7 +62,10 @@ class DAO(object):
             index = sql_utils.get_position_of_field_in_insert_query(exception.statement, field)
 
             if exception.params and len(exception.params) > index >= 0:
-                value = exception.params[index]
+                if type(exception.params) == list or type(exception.params) == tuple:
+                    value = exception.params[index]
+                else:
+                    value = exception.params[field]
 
             raise DuplicateEntryException(ErrorCode.GENERIC_EXCEPTION, entity, field, value)
 

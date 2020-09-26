@@ -35,3 +35,8 @@ def update_user(user_service: UserService, user_mapper: UserMapper):
     user_dto = request.json
     user = user_service.update_from_dto(user_dto)
     return jsonify(user_mapper.to_dto(user))
+
+
+@controller.route("/", methods=['GET'])
+def get_current_user(user_mapper: UserMapper):
+    return jsonify(user_mapper.to_dto(AuthenticationContext.get_current_user()))
