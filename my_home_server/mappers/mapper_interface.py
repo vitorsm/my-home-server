@@ -13,7 +13,7 @@ class MapperInterface(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def to_object(self, dto: dict, loaded_object: object = None) -> Optional[object]:
+    def to_object(self, dto: dict, not_update: bool = False) -> Optional[object]:
         """Receives a dict dto and converts to a object from models
         :rtype: object
         """

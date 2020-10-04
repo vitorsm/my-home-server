@@ -4,22 +4,23 @@ from typing import List, Optional
 from my_home_server.dao.brand_dao import BrandDAO
 from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
-from my_home_server.mappers.mapper import Mapper
+
+from my_home_server.mappers.brand_mapper import BrandMapper
 from my_home_server.models.brand import Brand
+from my_home_server.models.user import User
 from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.utils.sql_utils import transaction
 
 
 class BrandService(object):
 
-    def __init__(self, brand_dao: BrandDAO):
+    def __init__(self, brand_dao: BrandDAO, brand_mapper: BrandMapper):
         self.brand_dao = brand_dao
-        self.mapper = Mapper.get_mapper(Brand.__name__)
+        self.mapper = brand_mapper
 
     @transaction
     def create(self, brand: Brand) -> Brand:
-        brand.created_at = datetime.utcnow()
-        brand.created_by = AuthenticationContext.get_current_user()
+        BrandService.fill_to_create(brand, datetime.utcnow(), AuthenticationContext.get_current_user())
 
         self.brand_dao.add(brand)
 
@@ -34,23 +35,6 @@ class BrandService(object):
         return self.create(brand)
 
     @transaction
-    def fetch_or_create(self, brand: Brand) -> Optional[Brand]:
-        if not brand:
-            return None
-
-        new_brand = None
-
-        if brand.id:
-            new_brand = self.find_by_id(brand.id)
-
-        if not new_brand:
-            new_brand = self.create(brand)
-        else:
-            self.brand_dao.expunge(brand)
-
-        return new_brand
-
-    @transaction
     def update_from_dto(self, dto: dict):
         self.mapper.validate_dto_to_update(dto)
 
@@ -59,7 +43,8 @@ class BrandService(object):
         if not brand:
             raise ObjectNotFoundException(ErrorCode.BRAND_TO_UPDATE_NOT_FOUND,  Brand.__name__, {"id": dto.get("id")})
 
-        self.mapper.to_object(dto, brand)
+        brand = self.mapper.to_object(dto)
+
         self.brand_dao.update(brand)
 
         return brand
@@ -84,6 +69,15 @@ class BrandService(object):
             brand = self.create_from_dto(dto)
 
         return brand
+
+    @staticmethod
+    def fill_to_create(brand: Brand, created_at: datetime, created_by: User):
+        if not brand:
+            return
+
+        if not brand.created_by:
+            brand.created_at = created_at
+            brand.created_by = created_by
 
     def find_by_id(self, brand_id: int) -> Brand:
         return self.brand_dao.find_by_id(brand_id, AuthenticationContext.get_current_user())

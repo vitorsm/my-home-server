@@ -1,13 +1,27 @@
 import unittest
 
+from my_home_server.dao.user_group_dao import UserGroupDAO
 from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.exceptions.invalid_dto_exception import InvalidDTOException
 from my_home_server.mappers.user_group_mapper import UserGroupMapper
+from my_home_server.models.user_group import UserGroup
+
+
+class UserGroupDAOMock(UserGroupDAO):
+    def __init__(self):
+        super().__init__(None)
+
+    def find_by_id(self, user_group_id: int) -> UserGroup:
+        user_group = UserGroup()
+        user_group.id = user_group_id
+        user_group.name = "user_group_test"
+
+        return user_group
 
 
 class TestUserGroupMapper(unittest.TestCase):
     def setUp(self):
-        self.mapper = UserGroupMapper()
+        self.mapper = UserGroupMapper(UserGroupDAOMock())
 
     def test_to_obj(self):
         dto = {

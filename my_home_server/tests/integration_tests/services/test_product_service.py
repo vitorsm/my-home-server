@@ -237,14 +237,3 @@ class TestProductService(BaseTest):
         self.assertEqual(1, product.id)
         self.assertEqual(8, product.product_type.id)
         self.assertEqual(108, product.brand.id)
-
-    def test_fetch_or_create_without_value(self):
-        self.assertIsNone(self.service.fetch_or_create(None))
-
-    def test_fetch_or_create_with_value(self):
-        product = self.db.session.query(Product).get(40)
-        new_product = self.service.fetch_or_create(product)
-
-        assert product not in self.db.session
-        
-        self.assertEqual(product, new_product)

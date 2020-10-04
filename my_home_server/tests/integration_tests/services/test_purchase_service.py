@@ -80,7 +80,7 @@ class TestPurchaseService(BaseTest):
 
     def test_create_from_dto_with_id(self):
         dto = {
-            "id": 1,
+            "id": 111,
             "name": "Purchase name test",
             "purchase_list": {"id": 7}
         }

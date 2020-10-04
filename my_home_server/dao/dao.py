@@ -20,14 +20,6 @@ class DAO(object):
             else:
                 self.__handle_integrity_error(ex, "")
 
-    def expunge(self, entity: object):
-        try:
-            self.db.session.expunge(entity)
-        except InvalidRequestError:
-            # When a entity is not exist in the session is not necessary raise an error,
-            # because it's like it's already been expunged
-            pass
-
     def add(self, entity: object, commit: bool = False):
         self.db.session.add(entity)
         if commit:
@@ -70,4 +62,3 @@ class DAO(object):
             raise DuplicateEntryException(ErrorCode.GENERIC_EXCEPTION, entity, field, value)
 
         raise exception
-

@@ -7,7 +7,7 @@ from my_home_server.exceptions.duplicate_entry_exception import DuplicateEntryEx
 from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.exceptions.permission_exception import PermissionException, Actions
-from my_home_server.mappers.mapper import Mapper
+from my_home_server.mappers.user_mapper import UserMapper
 from my_home_server.models.user import User
 from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.security.password_encryption import PasswordEncryption
@@ -15,10 +15,10 @@ from my_home_server.services.user_group_service import UserGroupService
 
 
 class UserService(object):
-    def __init__(self, user_dao: UserDAO, user_group_service: UserGroupService):
+    def __init__(self, user_dao: UserDAO, user_group_service: UserGroupService, user_mapper: UserMapper):
         self.user_dao = user_dao
         self.user_group_service = user_group_service
-        self.mapper = Mapper.get_mapper(User.__name__)
+        self.mapper = user_mapper
 
     def find_by_id(self, user_id: int) -> Optional[User]:
         return self.user_dao.find_by_id(user_id)
@@ -59,7 +59,7 @@ class UserService(object):
         if user != AuthenticationContext.get_current_user():
             raise PermissionException(ErrorCode.UPDATE_USER_PERMISSION, User.__name__, Actions.UPDATE)
 
-        user = self.mapper.to_object(dto, user)
+        user = self.mapper.to_object(dto)
 
         if dto.get("password"):
             user.password = PasswordEncryption.encrypt_password(dto.get("password"))

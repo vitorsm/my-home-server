@@ -38,5 +38,7 @@ def update_user(user_service: UserService, user_mapper: UserMapper):
 
 
 @controller.route("/", methods=['GET'])
+@jwt_required()
+@authentication_utils.set_authentication_context
 def get_current_user(user_mapper: UserMapper):
     return jsonify(user_mapper.to_dto(AuthenticationContext.get_current_user()))

@@ -5,18 +5,21 @@ from typing import Optional, List
 from my_home_server.dao.purchase_list_dao import PurchaseListDAO
 from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
-from my_home_server.mappers.mapper import Mapper
+
+from my_home_server.mappers.purchase_list_mapper import PurchaseListMapper
 from my_home_server.models.purchase_list import PurchaseList
+from my_home_server.models.user import User
 from my_home_server.security.authentication_context import AuthenticationContext
 from my_home_server.services.product_service import ProductService
 from my_home_server.utils.sql_utils import transaction
 
 
 class PurchaseListService(object):
-    def __init__(self, purchase_list_dao: PurchaseListDAO, product_service: ProductService):
+    def __init__(self, purchase_list_dao: PurchaseListDAO, product_service: ProductService,
+                 purchase_list_mapper: PurchaseListMapper):
         self.purchase_list_dao = purchase_list_dao
         self.product_service = product_service
-        self.mapper = Mapper.get_mapper(PurchaseList.__name__)
+        self.mapper = purchase_list_mapper
 
     def find_by_id(self, purchase_list_id: int) -> Optional[PurchaseList]:
         return self.purchase_list_dao.find_by_id(purchase_list_id, AuthenticationContext.get_current_user())
@@ -29,21 +32,11 @@ class PurchaseListService(object):
         self.mapper.validate_dto_to_insert(dto)
 
         purchase_list = self.mapper.to_object(dto)
-        created_at = datetime.utcnow()
-        purchase_list.created_at = created_at
-        purchase_list.created_by = AuthenticationContext.get_current_user()
 
-        self.__fill_purchase_list_products(purchase_list)
+        PurchaseListService.fill_to_create(purchase_list, datetime.utcnow(), AuthenticationContext.get_current_user())
         self.purchase_list_dao.add(purchase_list)
 
         return purchase_list
-
-    def __fill_purchase_list_products(self, purchase_list: PurchaseList):
-        if not purchase_list.purchase_products or not len(purchase_list.purchase_products):
-            return
-
-        for product_purchase in purchase_list.purchase_products:
-            product_purchase.product = self.product_service.fetch_or_create(product_purchase.product)
 
     @transaction
     def update_from_dto(self, dto: dict):
@@ -55,9 +48,9 @@ class PurchaseListService(object):
             raise ObjectNotFoundException(ErrorCode.PURCHASE_LIST_TO_UPDATE_NOT_FOUND,
                                           PurchaseList.__name__, {"id": dto.get("id")})
 
-        self.mapper.to_object(dto, purchase_list)
+        self.mapper.to_object(dto)
 
-        self.__fill_purchase_list_products(purchase_list)
+        PurchaseListService.fill_to_create(purchase_list, datetime.utcnow(), AuthenticationContext.get_current_user())
 
         self.purchase_list_dao.update(purchase_list)
 
@@ -72,6 +65,21 @@ class PurchaseListService(object):
                                           PurchaseList.__name__, {"id": purchase_list_id})
 
         self.purchase_list_dao.delete(purchase_list)
+
+    @staticmethod
+    def fill_to_create(purchase_list: PurchaseList, created_at: datetime, created_by: User):
+        if not purchase_list:
+            return
+
+        if not purchase_list.created_by:
+            purchase_list.created_by = created_by
+            purchase_list.created_at = created_at
+
+        if not purchase_list.purchase_products:
+            return
+
+        for purchase_product in purchase_list.purchase_products:
+            ProductService.fill_to_create(purchase_product.product, created_at, created_by)
 
     def commit(self):
         self.purchase_list_dao.commit()
