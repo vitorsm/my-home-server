@@ -8,8 +8,8 @@ class PurchaseProduct(Base):
     __tablename__ = "purchase_has_product"
     purchase_id = Column(Integer, ForeignKey("purchase.id"), primary_key=True, nullable=False)
     product_id = Column(Integer, ForeignKey("product.id"), primary_key=True, nullable=False)
-    value = Column(Float, nullable=False)
-    quantity = Column(Integer, nullable=False, default=1)
+    value = Column(Float, nullable=False, default=0)
+    quantity = Column(Integer, nullable=False, default=0)
 
     purchase = relationship("Purchase", lazy="select")
     product = relationship("Product", lazy="select")

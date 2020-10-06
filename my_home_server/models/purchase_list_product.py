@@ -8,8 +8,8 @@ class PurchaseListProduct(Base):
     __tablename__ = "purchase_list_has_product"
     purchase_list_id = Column(Integer, ForeignKey("purchase_list.id"), primary_key=True, nullable=False)
     product_id = Column(Integer, ForeignKey("product.id"), primary_key=True, nullable=False)
-    estimated_value = Column(Float, nullable=False)
-    quantity = Column(Integer, nullable=False, default=1)
+    estimated_value = Column(Float, nullable=False, default=0)
+    quantity = Column(Integer, nullable=False, default=0)
 
     purchase_list = relationship("PurchaseList", lazy="select", foreign_keys=[purchase_list_id],
                                  back_populates="purchase_products")

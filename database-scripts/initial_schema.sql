@@ -79,8 +79,8 @@ create table purchase_list (
 create table purchase_list_has_product (
     purchase_list_id int not null,
     product_id int not null,
-    estimated_value float null,
-    quantity int not null default 1,
+    estimated_value float null default 0,
+    quantity int not null default 0,
     primary key (purchase_list_id, product_id),
     foreign key (purchase_list_id) references purchase_list(id),
     foreign key (product_id) references product(id)
@@ -100,8 +100,8 @@ create table purchase (
 create table purchase_has_product (
     purchase_id int not null,
     product_id int not null,
-    value float null,
-    quantity int not null default 1,
+    value float null default 0,
+    quantity int not null default 0,
     primary key (purchase_id, product_id),
     foreign key (purchase_id) references purchase(id),
     foreign key (product_id) references product(id)
