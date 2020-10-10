@@ -5,4 +5,4 @@ COPY . .
 WORKDIR ./
 RUN pip install -r requirements.txt
 
-CMD ["uwsgi", "--http", ":80", "--wsgi-file", "my_home_server/main.py", "--callable", "app", "--buffer-size", "32768"]
+CMD ["uwsgi", "--http", ":80", "-w", "my_home_server.wsgi:app", "--buffer-size", "32768"]

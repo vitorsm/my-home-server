@@ -37,9 +37,8 @@ jwt = JWT(app, authenticate, identity)
 dependency_injector = Injector([AppModule(app)])
 
 controllers_register.register_controllers(app)
-
+FlaskInjector(app=app, injector=dependency_injector)
 
 if __name__ == "__main__":
 
-    FlaskInjector(app=app, injector=dependency_injector)
     app.run(host='0.0.0.0', port=config.HOST_PORT)
