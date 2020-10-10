@@ -1,0 +1,14 @@
+
+version: '2'
+
+services:
+  my-home-server:
+    image: my-home-server:latest
+    ports:
+      - 5000:80
+    environment:
+      - DB_URL=172.17.0.1:3306/myhome
+      - DB_USERNAME=user
+      - DB_PASSWORD=
+      - ENCRYPT_SECRET_KEY=TMMcUgCsu5qbYmJ2Qbcw
+      - HOURS_TO_EXPIRATION_TOKEN=12
