@@ -3,7 +3,7 @@ version: '2'
 
 services:
   my-home-server:
-    image: my-home-server:latest
+    image: vitorsmoreira/myhome-server:latest
     ports:
       - 5000:80
     environment:
