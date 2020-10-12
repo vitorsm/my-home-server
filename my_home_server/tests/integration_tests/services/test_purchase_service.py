@@ -22,6 +22,7 @@ class TestPurchaseService(BaseTest):
         self.assertEqual("List 7", purchase.purchase_list.name)
         self.assertEqual([13, 14, 15, 16], [pp.product.id for pp in purchase.purchase_list.purchase_products])
         self.assertEqual([13, 14, 15, 16], [pp.product.id for pp in purchase.products])
+        self.assertEqual(10, purchase.total_value)
 
     def test_find_all(self):
         user = self.db.session.query(User).get(4)
@@ -64,6 +65,7 @@ class TestPurchaseService(BaseTest):
         self.assertIsNone(purchase.name)
         self.assertEqual(2, len(purchase.products))
         self.assertEqual("Product 13", purchase.products[0].product.name)
+        self.assertEqual(34, purchase.total_value)
 
     def test_create_from_dto_without_products(self):
         dto = {
@@ -128,7 +130,7 @@ class TestPurchaseService(BaseTest):
                     "quantity": 2
                 }, {
                     "name": "new_product",
-                    "value": 10,
+                    "value": 11,
                     "quantity": 1
                 }
             ]
@@ -144,8 +146,9 @@ class TestPurchaseService(BaseTest):
         self.assertEqual(12, purchase.products[0].value)
         self.assertEqual("Product 13", purchase.products[0].product.name)
         self.assertEqual(1, purchase.products[1].quantity)
-        self.assertEqual(10, purchase.products[1].value)
+        self.assertEqual(11, purchase.products[1].value)
         self.assertEqual("new_product", purchase.products[1].product.name)
+        self.assertEqual(35, purchase.total_value)
 
     def test_update_from_dto_with_purchase_list_none(self):
         dto = {
@@ -158,7 +161,7 @@ class TestPurchaseService(BaseTest):
                     "quantity": 2
                 }, {
                     "name": "new_product",
-                    "value": 10,
+                    "value": 13,
                     "quantity": 1
                 }
             ]
@@ -174,6 +177,7 @@ class TestPurchaseService(BaseTest):
         self.assertEqual(12, purchase.products[0].value)
         self.assertEqual("Product 13", purchase.products[0].product.name)
         self.assertEqual(1, purchase.products[1].quantity)
-        self.assertEqual(10, purchase.products[1].value)
+        self.assertEqual(13, purchase.products[1].value)
         self.assertEqual("new_product", purchase.products[1].product.name)
+        self.assertEqual(37, purchase.total_value)
 

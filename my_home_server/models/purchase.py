@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
 from sqlalchemy.orm import relationship
 
 from my_home_server.models.base_models import Base
@@ -18,8 +18,16 @@ class Purchase(Base):
     purchase_list = relationship("PurchaseList", lazy="select")
     products = relationship("PurchaseProduct", lazy="select", cascade="all, delete-orphan")
 
+    total_value = Column(Float, nullable=False, default=0)
+
     def __eq__(self, other):
         return other and self.id == other.id
 
     def __hash__(self):
         return hash(self.id)
+
+    def fill_total_value(self):
+        if not self.products or not len(self.products):
+            self.total_value = 0
+        else:
+            self.total_value = sum([p.quantity * p.value for p in self.products])

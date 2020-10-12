@@ -72,6 +72,7 @@ create table purchase_list (
     name varchar(255) not null,
     created_by_id int not null,
     created_at timestamp not null default now(),
+    total_estimated_value FLOAT NOT NULL DEFAULT 0,
     primary key (id),
     foreign key (created_by_id) references user(id)
 );
@@ -92,6 +93,7 @@ create table purchase (
     name varchar(255) null,
     created_by_id int not null,
     created_at timestamp not null default now(),
+    total_value FLOAT NOT NULL DEFAULT 0,
     primary key (id),
     foreign key (created_by_id) references user(id),
     foreign key (purchase_list_id) references purchase_list(id)

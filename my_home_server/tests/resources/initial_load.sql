@@ -62,20 +62,22 @@ insert into product (id, name, product_type_id, brand_id, created_by_id, created
 (16, 'Product 16', null, null, 4, '2020-09-22 19:56:28.757876', 0, null);
 
 
-insert into purchase_list (id, name, created_by_id, created_at) values
-(1, 'List 1', 1, '2020-09-22 19:56:28.757876'),
-(2, 'List 2', 5, '2020-09-22 19:56:28.757876'),
-(3, 'List 3', 1, '2020-09-22 19:56:28.757876'),
-(4, 'List 4', 1, '2020-09-22 19:56:28.757876'),
-(5, 'List 5', 1, '2020-09-22 19:56:28.757876'),
-(6, 'List 6', 5, '2020-09-22 19:56:28.757876'),
+-- the field total_estimated_value not contains right values. Just for test
+
+insert into purchase_list (id, name, created_by_id, created_at, total_estimated_value) values
+(1, 'List 1', 1, '2020-09-22 19:56:28.757876', 12),
+(2, 'List 2', 5, '2020-09-22 19:56:28.757876', 2),
+(3, 'List 3', 1, '2020-09-22 19:56:28.757876', 3),
+(4, 'List 4', 1, '2020-09-22 19:56:28.757876', 3),
+(5, 'List 5', 1, '2020-09-22 19:56:28.757876', 3),
+(6, 'List 6', 5, '2020-09-22 19:56:28.757876', 7),
 
 
 -- to use in purchase_test
-(7, 'List 7', 1, '2020-09-22 19:56:28.757876'),
-(8, 'List 8', 4, '2020-09-22 19:56:28.757876'),
-(9, 'List 9', 4, '2020-09-22 19:56:28.757876'),
-(10, 'List 10', 1, '2020-09-22 19:56:28.757876');
+(7, 'List 7', 1, '2020-09-22 19:56:28.757876', 6),
+(8, 'List 8', 4, '2020-09-22 19:56:28.757876', 1),
+(9, 'List 9', 4, '2020-09-22 19:56:28.757876', 3),
+(10, 'List 10', 1, '2020-09-22 19:56:28.757876', 4);
 
 insert into purchase_list_has_product (purchase_list_id, product_id, estimated_value, quantity) values
 (1, 10, 12.5, 3),
@@ -102,15 +104,16 @@ insert into purchase_list_has_product (purchase_list_id, product_id, estimated_v
 (10, 15, 1.2, 2),
 (10, 16, 4, 1);
 
+-- the field total_value not contains right values. Just for test
 
-insert into purchase (id, purchase_list_id, name, created_by_id, created_at) values
-(1, 7, 'Purchase 1', 1, '2020-09-22 19:56:28.757876'),
-(2, 8, 'Purchase 2', 4, '2020-09-22 19:56:28.757876'),
-(3, 9, 'Purchase 3', 4, '2020-09-22 19:56:28.757876'),
-(4, 10, 'Purchase 4', 1, '2020-09-22 19:56:28.757876'),
-(5, null, 'Purchase 5', 1, '2020-09-22 19:56:28.757876'),
-(6, null, 'Purchase 6', 1, '2020-09-22 19:56:28.757876'),
-(7, 10, 'Purchase 7', 1, '2020-09-22 19:56:28.757876');
+insert into purchase (id, purchase_list_id, name, created_by_id, created_at, total_value) values
+(1, 7, 'Purchase 1', 1, '2020-09-22 19:56:28.757876', 10),
+(2, 8, 'Purchase 2', 4, '2020-09-22 19:56:28.757876', 102),
+(3, 9, 'Purchase 3', 4, '2020-09-22 19:56:28.757876', 43),
+(4, 10, 'Purchase 4', 1, '2020-09-22 19:56:28.757876', 98),
+(5, null, 'Purchase 5', 1, '2020-09-22 19:56:28.757876', 12),
+(6, null, 'Purchase 6', 1, '2020-09-22 19:56:28.757876', 34),
+(7, 10, 'Purchase 7', 1, '2020-09-22 19:56:28.757876', 90);
 
 insert into purchase_has_product (purchase_id, product_id, value, quantity) values
 (1, 13, 6.5, 1),
