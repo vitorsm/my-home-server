@@ -134,3 +134,39 @@ class TestPurchaseController(BaseTest):
         response = self.client.delete("/api/purchase/1")
         self.assertEqual(403, response.status_code)
 
+    def test_get_response_dto_without_permission(self):
+        response = self.client.get("/api/purchase/monthly-spend")
+
+        self.assertEqual(403, response.status_code)
+
+    def test_get_response_dto_without_data(self):
+        response = self.client.get("/api/purchase/monthly-spend", headers=self.get_authentication_header())
+        response_dto = json.loads(response.data.decode())
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response_dto))
+
+    def test_get_response_dto(self):
+        response = self.client.get("/api/purchase/monthly-spend?start-date=2020-09-22&end-date=2020-12-30",
+                                   headers=self.get_authentication_header())
+        response_dto = json.loads(response.data.decode())
+
+        self.assertEqual(200, response.status_code)
+        
+        self.assertEqual(4, len(response_dto))
+
+        self.assertEqual(2020, response_dto[0].get("year"))
+        self.assertEqual(9, response_dto[0].get("month"))
+        self.assertEqual(146, response_dto[0].get("value"))
+
+        self.assertEqual(2020, response_dto[1].get("year"))
+        self.assertEqual(10, response_dto[1].get("month"))
+        self.assertEqual(12, response_dto[1].get("value"))
+
+        self.assertEqual(2020, response_dto[2].get("year"))
+        self.assertEqual(11, response_dto[2].get("month"))
+        self.assertEqual(31, response_dto[2].get("value"))
+
+        self.assertEqual(2020, response_dto[3].get("year"))
+        self.assertEqual(12, response_dto[3].get("month"))
+        self.assertEqual(56, response_dto[3].get("value"))

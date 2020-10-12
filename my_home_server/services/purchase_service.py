@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from my_home_server.dao.purchase_dao import PurchaseDAO
 from my_home_server.exceptions.error_code import ErrorCode
@@ -88,6 +88,46 @@ class PurchaseService(object):
             ProductService.fill_to_create(purchase_product.product, created_at, created_by)
 
         purchase.fill_total_value()
+
+    def get_monthly_spend_by_period(self, start_date: datetime, end_date: datetime) -> List[dict]:
+        purchases = self.find_purchase_by_period(start_date, end_date)
+        if not purchases or not len(purchases):
+            return list()
+        grouped_purchases = self.group_purchases_by_month(purchases)
+
+        monthly_list = list()
+
+        for timestamp, purchases in grouped_purchases.items():
+            date = datetime.fromtimestamp(timestamp)
+            monthly_list.append({
+                "year": date.year,
+                "month": date.month,
+                "value": sum(purchase.total_value for purchase in purchases)
+            })
+
+        return monthly_list
+
+    def find_purchase_by_period(self, start_date: datetime, end_date: datetime) -> List[Purchase]:
+        return self.purchase_dao.find_by_period(start_date, end_date, AuthenticationContext.get_current_user())
+
+    @staticmethod
+    def group_purchases_by_month(purchases: List[Purchase]) -> Optional[Dict[float, List[Purchase]]]:
+        if not purchases or not len(purchases):
+            return None
+
+        grouped = dict()
+        for purchase in purchases:
+            timestamp = purchase.created_at.timestamp()
+            exists_key = next((key_timestamp for key_timestamp in grouped.keys()
+                              if datetime.fromtimestamp(key_timestamp).year == purchase.created_at.year and
+                              datetime.fromtimestamp(key_timestamp).month == purchase.created_at.month), None)
+
+            if exists_key:
+                grouped[exists_key].append(purchase)
+            else:
+                grouped[timestamp] = [purchase]
+
+        return grouped
 
     def commit(self):
         self.purchase_dao.commit()

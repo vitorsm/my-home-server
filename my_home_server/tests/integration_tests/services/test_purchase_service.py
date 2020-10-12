@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
 from my_home_server.models.purchase import Purchase
 from my_home_server.models.user import User
@@ -180,4 +182,59 @@ class TestPurchaseService(BaseTest):
         self.assertEqual(13, purchase.products[1].value)
         self.assertEqual("new_product", purchase.products[1].product.name)
         self.assertEqual(37, purchase.total_value)
+
+    def test_find_purchase_by_period_without_data(self):
+        purchases = self.service.find_purchase_by_period(datetime(2020, 4, 2), datetime(2020, 9, 20))
+
+        self.assertEqual(0, len(purchases))
+
+    def test_find_purchase_by_period_datetime_without_data(self):
+        purchases = self.service.find_purchase_by_period(datetime(2020, 9, 20, 19, 56, 29),
+                                                         datetime(2020, 9, 22, 19, 56, 27))
+
+        self.assertEqual(0, len(purchases))
+
+    def test_find_purchase_by_period_day22(self):
+        purchases = self.service.find_purchase_by_period(datetime(2020, 9, 22), datetime(2020, 9, 23))
+
+        self.assertEqual(4, len(purchases))
+
+    def test_find_purchase_by_period_day20(self):
+        purchases = self.service.find_purchase_by_period(datetime(2020, 9, 20), datetime(2020, 9, 22))
+
+        self.assertEqual(1, len(purchases))
+
+    def test_get_monthly_spend_by_period_without_data(self):
+        monthly_spend = self.service.get_monthly_spend_by_period(datetime(2020, 9, 20, 19, 56, 29),
+                                                                 datetime(2020, 9, 22, 19, 56, 27))
+        self.assertEqual(0, len(monthly_spend))
+
+    def test_get_monthly_spend_by_period_with_part_month(self):
+        monthly_spend = self.service.get_monthly_spend_by_period(datetime(2020, 9, 22), datetime(2020, 9, 23))
+
+        self.assertEqual(1, len(monthly_spend))
+        self.assertEqual(2020, monthly_spend[0].get("year"))
+        self.assertEqual(9, monthly_spend[0].get("month"))
+        self.assertEqual(146, monthly_spend[0].get("value"))
+
+    def test_get_monthly_spend_by_period_with_many_month(self):
+        monthly_spend = self.service.get_monthly_spend_by_period(datetime(2020, 9, 22), datetime(2020, 12, 30))
+
+        self.assertEqual(4, len(monthly_spend))
+
+        self.assertEqual(2020, monthly_spend[0].get("year"))
+        self.assertEqual(9, monthly_spend[0].get("month"))
+        self.assertEqual(146, monthly_spend[0].get("value"))
+
+        self.assertEqual(2020, monthly_spend[1].get("year"))
+        self.assertEqual(10, monthly_spend[1].get("month"))
+        self.assertEqual(12, monthly_spend[1].get("value"))
+
+        self.assertEqual(2020, monthly_spend[2].get("year"))
+        self.assertEqual(11, monthly_spend[2].get("month"))
+        self.assertEqual(31, monthly_spend[2].get("value"))
+
+        self.assertEqual(2020, monthly_spend[3].get("year"))
+        self.assertEqual(12, monthly_spend[3].get("month"))
+        self.assertEqual(56, monthly_spend[3].get("value"))
 
