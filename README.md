@@ -6,6 +6,11 @@ It is a Flask application and use SQLAlchemy as a ORM.
 
 [![codecov](https://codecov.io/gh/vitorsm/my-home-server/branch/master/graph/badge.svg)](https://codecov.io/gh/vitorsm/my-home-server)
 
+The porpuse of this project is to provide functions to create a shopping list and registered all products bought in shopping and provide reports about spend money and more bought products.
+
+The frontend is in the my-home-app in https://github.com/vitorsm/my-home-app/
+
+The main entity in this project is Purchase, each Purchase has a list of bought products. The products can be registered before and be linked to a brand and product type. If the product has product type and brand, is possible to generate report by brand and product type.
 
 ## Requirements
 
