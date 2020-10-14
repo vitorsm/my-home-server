@@ -31,7 +31,7 @@ class TestPurchaseController(BaseTest):
         response_dto = json.loads(response.data.decode())
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(5, len(response_dto))
+        self.assertEqual(10, len(response_dto))
         self.assertEqual(1, response_dto[0]["id"])
         self.assertEqual("Purchase 1", response_dto[0]["name"])
         self.assertEqual(1, response_dto[0]["created_by"]["id"])

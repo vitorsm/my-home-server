@@ -89,24 +89,6 @@ class PurchaseService(object):
 
         purchase.fill_total_value()
 
-    def get_monthly_spend_by_period(self, start_date: datetime, end_date: datetime) -> List[dict]:
-        purchases = self.find_purchase_by_period(start_date, end_date)
-        if not purchases or not len(purchases):
-            return list()
-        grouped_purchases = self.group_purchases_by_month(purchases)
-
-        monthly_list = list()
-
-        for timestamp, purchases in grouped_purchases.items():
-            date = datetime.fromtimestamp(timestamp)
-            monthly_list.append({
-                "year": date.year,
-                "month": date.month,
-                "value": sum(purchase.total_value for purchase in purchases)
-            })
-
-        return monthly_list
-
     def find_purchase_by_period(self, start_date: datetime, end_date: datetime) -> List[Purchase]:
         return self.purchase_dao.find_by_period(start_date, end_date, AuthenticationContext.get_current_user())
 
@@ -131,3 +113,21 @@ class PurchaseService(object):
 
     def commit(self):
         self.purchase_dao.commit()
+
+    def get_monthly_spend_by_period(self, start_date: datetime, end_date: datetime) -> List[dict]:
+        purchases = self.find_purchase_by_period(start_date, end_date)
+        if not purchases or not len(purchases):
+            return list()
+        grouped_purchases = self.group_purchases_by_month(purchases)
+
+        monthly_list = list()
+
+        for timestamp, purchases in grouped_purchases.items():
+            date = datetime.fromtimestamp(timestamp)
+            monthly_list.append({
+                "year": date.year,
+                "month": date.month,
+                "value": sum(purchase.total_value for purchase in purchases)
+            })
+
+        return monthly_list

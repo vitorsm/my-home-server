@@ -20,3 +20,10 @@ class PurchaseListProduct(Base):
 
     def __hash__(self):
         return hash(self.purchase_list_id + self.product_id)
+
+    @property
+    def calculated_value(self) -> float:
+        if not self.estimated_value or not self.quantity:
+            return 0
+
+        return self.estimated_value * self.quantity

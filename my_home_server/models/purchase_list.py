@@ -29,4 +29,4 @@ class PurchaseList(Base):
         if not self.purchase_products or not len(self.purchase_products):
             self.total_estimated_value = 0
         else:
-            self.total_estimated_value = sum([p.quantity * p.estimated_value for p in self.purchase_products])
+            self.total_estimated_value = sum([p.calculated_value for p in self.purchase_products])
