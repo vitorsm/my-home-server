@@ -80,7 +80,8 @@ class AppModule(Module):
         dependencies.append(user_group_service)
         user_service = UserService(user_dao, user_group_service, user_mapper)
         dependencies.append(user_service)
-        purchase_service = PurchaseService(purchase_dao, purchase_list_service, product_service, purchase_mapper)
+        purchase_service = PurchaseService(purchase_dao, purchase_list_service, product_service, purchase_mapper,
+                                           product_type_mapper)
         dependencies.append(purchase_service)
 
         for instance in dependencies:

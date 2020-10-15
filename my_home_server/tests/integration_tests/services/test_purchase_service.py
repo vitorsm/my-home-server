@@ -238,3 +238,34 @@ class TestPurchaseService(BaseTest):
         self.assertEqual(12, monthly_spend[3].get("month"))
         self.assertEqual(56, monthly_spend[3].get("value"))
 
+    def test_get_spend_by_period_grouped_by_product_type_without_data(self):
+        spend_grouped_by_product_type = self.service.get_spend_by_period_grouped_by_product_type(datetime(2020, 4, 2),
+                                                                                                 datetime(2020, 9, 20))
+
+        self.assertEqual(0, len(spend_grouped_by_product_type))
+
+    def test_get_spend_by_period_grouped_by_product_type_with_data(self):
+        spend_grouped_by_product_type = self.service.get_spend_by_period_grouped_by_product_type(datetime(2020, 9, 22),
+                                                                                                 datetime(2021, 1, 1))
+
+        self.assertEqual(2, len(spend_grouped_by_product_type))
+        self.assertEqual(1, len(spend_grouped_by_product_type[0]["children"]))
+        self.assertEqual(2, len(spend_grouped_by_product_type[1]["children"]))
+        self.assertEqual(46, spend_grouped_by_product_type[0]["value"])
+        self.assertEqual(89, spend_grouped_by_product_type[1]["value"])
+        self.assertEqual(21, spend_grouped_by_product_type[0]["children"][0]["value"])
+        self.assertEqual(30, spend_grouped_by_product_type[1]["children"][0]["value"])
+        self.assertEqual(20, spend_grouped_by_product_type[1]["children"][1]["value"])
+
+    def test_get_spend_by_period_grouped_by_product_type_with_mult_data(self):
+        spend_grouped_by_product_type = self.service.get_spend_by_period_grouped_by_product_type(datetime(2020, 9, 22),
+                                                                                                 datetime(2021, 1, 5))
+
+        self.assertEqual(2, len(spend_grouped_by_product_type))
+        self.assertEqual(1, len(spend_grouped_by_product_type[0]["children"]))
+        self.assertEqual(2, len(spend_grouped_by_product_type[1]["children"]))
+        self.assertEqual(86, spend_grouped_by_product_type[0]["value"])
+        self.assertEqual(160, spend_grouped_by_product_type[1]["value"])
+        self.assertEqual(37, spend_grouped_by_product_type[0]["children"][0]["value"])
+        self.assertEqual(50, spend_grouped_by_product_type[1]["children"][0]["value"])
+        self.assertEqual(35, spend_grouped_by_product_type[1]["children"][1]["value"])

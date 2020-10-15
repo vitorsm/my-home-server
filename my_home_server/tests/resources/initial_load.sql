@@ -34,7 +34,14 @@ insert into product_type (id, name, description, parent_product_type_id, is_priv
 -- to use in product test
 (8, 'ProductType8', 'Product Type 7', 5, 0, 3, '2020-09-22 19:56:28.757876'),
 (9, 'ProductType9', 'Product Type 7', 5, 0, 1, '2020-09-22 19:56:28.757876'),
-(10, 'ProductType10', 'Product Type 7', 5, 0, 1, '2020-09-22 19:56:28.757876');
+(10, 'ProductType10', 'Product Type 7', 5, 0, 1, '2020-09-22 19:56:28.757876'),
+
+-- to use in purchase test
+(11, 'ProductType11', 'Product Type 11', null, 0, 1, '2020-09-22 19:56:28.757876'),
+(12, 'ProductType12', 'Product Type 12', 11, 0, 1, '2020-09-22 19:56:28.757876'),
+(13, 'ProductType13', 'Product Type 13', null, 0, 1, '2020-09-22 19:56:28.757876'),
+(14, 'ProductType14', 'Product Type 14', 13, 0, 1, '2020-09-22 19:56:28.757876'),
+(15, 'ProductType15', 'Product Type 15', 13, 0, 1, '2020-09-22 19:56:28.757876');
 
 
 insert into product (id, name, product_type_id, brand_id, created_by_id, created_at, is_private, image_url) values
@@ -59,7 +66,14 @@ insert into product (id, name, product_type_id, brand_id, created_by_id, created
 (13, 'Product 13', null, null, 1, '2020-09-22 19:56:28.757876', 0, null),
 (14, 'Product 14', null, null, 1, '2020-09-22 19:56:28.757876', 1, null),
 (15, 'Product 15', null, null, 4, '2020-09-22 19:56:28.757876', 1, null),
-(16, 'Product 16', null, null, 4, '2020-09-22 19:56:28.757876', 0, null);
+(16, 'Product 16', null, null, 4, '2020-09-22 19:56:28.757876', 0, null),
+
+-- to use in purchase test
+(18, 'Product 17', 11, null, 1, '2020-09-22 19:56:28.757876', 0, null),
+(19, 'Product 18', 12, null, 1, '2020-09-22 19:56:28.757876', 1, null),
+(20, 'Product 19', 13, null, 1, '2020-09-22 19:56:28.757876', 1, null),
+(21, 'Product 20', 14, null, 1, '2020-09-22 19:56:28.757876', 0, null),
+(22, 'Product 21', 15, null, 1, '2020-09-22 19:56:28.757876', 0, null);
 
 
 -- the field total_estimated_value not contains right values. Just for test
@@ -118,7 +132,9 @@ insert into purchase (id, purchase_list_id, name, created_by_id, created_at, tot
 (9, 10, 'Purchase 9', 1, '2020-11-22 19:56:28.757876', 31),
 (10, 10, 'Purchase 10', 1, '2020-12-22 19:56:28.757876', 25),
 (11, 10, 'Purchase 11', 1, '2020-12-26 19:56:28.757876', 31),
-(12, 10, 'Purchase 12', 1, '2020-12-31 19:56:28.757876', 25);
+(12, 10, 'Purchase 12', 1, '2020-12-31 19:56:28.757876', 25),
+(13, 10, 'Purchase 13', 1, '2020-12-31 19:56:28.757876', 25),
+(14, 10, 'Purchase 14', 1, '2021-01-04 19:56:28.757876', 25);
 
 insert into purchase_has_product (purchase_id, product_id, value, quantity) values
 (1, 13, 6.5, 1),
@@ -142,5 +158,17 @@ insert into purchase_has_product (purchase_id, product_id, value, quantity) valu
 (6, 15, 2, 5),
 (6, 16, 2, 1),
 (7, 15, 2, 5),
-(7, 16, 2, 1);
+(7, 16, 2, 1),
+
+(13, 18, 12.5, 2),
+(13, 19, 21, 1),
+(13, 20, 13, 3),
+(13, 21, 15, 2),
+(13, 22, 20, 1),
+
+(14, 18, 12, 2),
+(14, 19, 16, 1),
+(14, 20, 12, 3),
+(14, 21, 10, 2),
+(14, 22, 15, 1);
 

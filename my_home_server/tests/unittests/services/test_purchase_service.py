@@ -26,7 +26,7 @@ purchases_to_test_group_by_month = [purchase1, purchase2, purchase3, purchase4, 
 
 class TestPurchaseService(unittest.TestCase):
     def setUp(self):
-        self.service = PurchaseService(None, None, None, None)
+        self.service = PurchaseService(None, None, None, None, None)
 
     def test_group_purchase_by_month_without_data(self):
         grouped_purchase = self.service.group_purchases_by_month(list())

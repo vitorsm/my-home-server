@@ -24,7 +24,7 @@ class TestProductTypeService(BaseTest):
 
         product_types = self.service.find_all()
 
-        self.assertEqual(6, len(product_types))
+        self.assertEqual(11, len(product_types))
         self.assertNotIn(3, [p.id for p in product_types])
 
     def test_create_from_dto_without_name(self):

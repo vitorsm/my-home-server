@@ -4,6 +4,7 @@ from typing import Optional, List, Dict
 from my_home_server.dao.purchase_dao import PurchaseDAO
 from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
+from my_home_server.mappers.product_type_mapper import ProductTypeMapper
 
 from my_home_server.mappers.purchase_mapper import PurchaseMapper
 from my_home_server.models.purchase import Purchase
@@ -16,11 +17,13 @@ from my_home_server.utils.sql_utils import transaction
 
 class PurchaseService(object):
     def __init__(self, purchase_dao: PurchaseDAO, purchase_list_service: PurchaseListService,
-                 product_service: ProductService, purchase_mapper: PurchaseMapper):
+                 product_service: ProductService, purchase_mapper: PurchaseMapper,
+                 product_type_mapper: ProductTypeMapper):
         self.purchase_dao = purchase_dao
         self.purchase_list_service = purchase_list_service
         self.product_service = product_service
         self.mapper = purchase_mapper
+        self.product_type_mapper = product_type_mapper
 
     def find_by_id(self, purchase_id: int) -> Optional[Purchase]:
         return self.purchase_dao.find_by_id(purchase_id, AuthenticationContext.get_current_user())
@@ -131,3 +134,23 @@ class PurchaseService(object):
             })
 
         return monthly_list
+
+    def get_spend_by_period_grouped_by_product_type(self, start_date: datetime, end_date: datetime) -> List[dict]:
+        purchases = self.find_purchase_by_period(start_date, end_date)
+
+        product_type_values = list()
+
+        for purchase in purchases:
+            product_type_values = purchase.get_product_type_and_values(initial_product_type_values=product_type_values)
+
+        for product_type_value in product_type_values:
+            self.__convert_product_type_value_to_dto(product_type_value)
+
+        return product_type_values
+
+    def __convert_product_type_value_to_dto(self, product_type_value: dict):
+        if product_type_value.get("children") and len(product_type_value.get("children")):
+            for child_value in product_type_value.get("children"):
+                self.__convert_product_type_value_to_dto(child_value)
+
+        product_type_value["product_type"] = self.product_type_mapper.to_dto(product_type_value["product_type"])

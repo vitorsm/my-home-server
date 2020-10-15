@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
 from sqlalchemy.orm import relationship
@@ -35,11 +35,11 @@ class Purchase(Base):
         else:
             self.total_value = sum([p.calculated_value for p in self.products])
 
-    def get_product_type_and_values(self) -> List[dict]:
+    def get_product_type_and_values(self, initial_product_type_values: Optional[List[dict]] = None) -> List[dict]:
         if not self.products or not len(self.products):
             return list()
 
-        product_type_values = list()
+        product_type_values = list() if not initial_product_type_values else initial_product_type_values
 
         for purchase_product in self.products:
             product_type = purchase_product.product.product_type

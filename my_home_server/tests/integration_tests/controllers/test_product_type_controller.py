@@ -27,7 +27,7 @@ class TestProductTypeController(BaseTest):
         response_dto = json.loads(response.data.decode())
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(9, len(response_dto))
+        self.assertEqual(14, len(response_dto))
         self.assertEqual(5, response_dto[3]["id"])
         self.assertEqual("ProductType41", response_dto[3]["name"])
         self.assertEqual("Product Type 41", response_dto[3]["description"])
