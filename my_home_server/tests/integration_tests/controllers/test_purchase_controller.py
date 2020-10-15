@@ -134,20 +134,20 @@ class TestPurchaseController(BaseTest):
         response = self.client.delete("/api/purchase/1")
         self.assertEqual(403, response.status_code)
 
-    def test_get_response_dto_without_permission(self):
-        response = self.client.get("/api/purchase/monthly-spend")
+    def test_get_monthly_spent_without_permission(self):
+        response = self.client.get("/api/purchase/monthly-spent")
 
         self.assertEqual(403, response.status_code)
 
-    def test_get_response_dto_without_data(self):
-        response = self.client.get("/api/purchase/monthly-spend", headers=self.get_authentication_header())
+    def test_get_monthly_spent_without_data(self):
+        response = self.client.get("/api/purchase/monthly-spent", headers=self.get_authentication_header())
         response_dto = json.loads(response.data.decode())
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(0, len(response_dto))
 
-    def test_get_response_dto(self):
-        response = self.client.get("/api/purchase/monthly-spend?start-date=2020-09-22&end-date=2020-12-30",
+    def test_get_monthly_spent_dto(self):
+        response = self.client.get("/api/purchase/monthly-spent?start-date=2020-09-22&end-date=2020-12-30",
                                    headers=self.get_authentication_header())
         response_dto = json.loads(response.data.decode())
 
@@ -170,3 +170,31 @@ class TestPurchaseController(BaseTest):
         self.assertEqual(2020, response_dto[3].get("year"))
         self.assertEqual(12, response_dto[3].get("month"))
         self.assertEqual(56, response_dto[3].get("value"))
+
+    def test_get_product_type_spent_without_permission(self):
+        response = self.client.get("/api/purchase/product-type-spent")
+
+        self.assertEqual(403, response.status_code)
+
+    def test_get_product_type_spent_without_data(self):
+        response = self.client.get("/api/purchase/product-type-spent", headers=self.get_authentication_header())
+        response_dto = json.loads(response.data.decode())
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(0, len(response_dto))
+
+    def test_get_product_type_spent_dto(self):
+        response = self.client.get("/api/purchase/product-type-spent?start-date=2020-09-22&end-date=2021-01-05",
+                                   headers=self.get_authentication_header())
+        response_dto = json.loads(response.data.decode())
+
+        self.assertEqual(200, response.status_code)
+
+        self.assertEqual(2, len(response_dto))
+        self.assertEqual(1, len(response_dto[0]["children"]))
+        self.assertEqual(2, len(response_dto[1]["children"]))
+        self.assertEqual(86, response_dto[0]["value"])
+        self.assertEqual(160, response_dto[1]["value"])
+        self.assertEqual(37, response_dto[0]["children"][0]["value"])
+        self.assertEqual(50, response_dto[1]["children"][0]["value"])
+        self.assertEqual(35, response_dto[1]["children"][1]["value"])

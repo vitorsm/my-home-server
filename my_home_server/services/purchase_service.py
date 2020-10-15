@@ -117,7 +117,7 @@ class PurchaseService(object):
     def commit(self):
         self.purchase_dao.commit()
 
-    def get_monthly_spend_by_period(self, start_date: datetime, end_date: datetime) -> List[dict]:
+    def get_monthly_spent_by_period(self, start_date: datetime, end_date: datetime) -> List[dict]:
         purchases = self.find_purchase_by_period(start_date, end_date)
         if not purchases or not len(purchases):
             return list()
@@ -135,7 +135,7 @@ class PurchaseService(object):
 
         return monthly_list
 
-    def get_spend_by_period_grouped_by_product_type(self, start_date: datetime, end_date: datetime) -> List[dict]:
+    def get_spent_by_period_grouped_by_product_type(self, start_date: datetime, end_date: datetime) -> List[dict]:
         purchases = self.find_purchase_by_period(start_date, end_date)
 
         product_type_values = list()

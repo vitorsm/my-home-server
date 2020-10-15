@@ -54,10 +54,10 @@ def delete_purchase(purchase_id: str, purchase_service: PurchaseService):
     return {}, 200
 
 
-@controller.route("/monthly-spend")
+@controller.route("/monthly-spent")
 @jwt_required()
 @authentication_utils.set_authentication_context
-def get_monthly_spend(purchase_service: PurchaseService):
+def get_monthly_spent(purchase_service: PurchaseService):
     start_date_field = "start-date"
     end_date_field = "end-date"
 
@@ -70,4 +70,24 @@ def get_monthly_spend(purchase_service: PurchaseService):
     if not end_date:
         end_date = datetime.now()
 
-    return jsonify(purchase_service.get_monthly_spend_by_period(start_date, end_date))
+    return jsonify(purchase_service.get_monthly_spent_by_period(start_date, end_date))
+
+
+@controller.route("/product-type-spent")
+@jwt_required()
+@authentication_utils.set_authentication_context
+def get_product_type_spent(purchase_service: PurchaseService):
+    start_date_field = "start-date"
+    end_date_field = "end-date"
+
+    start_date = request.args.get(start_date_field, type=from_str_to_date)
+    end_date = request.args.get(end_date_field, type=from_str_to_date)
+
+    if not start_date:
+        start_date = datetime.now() - timedelta(days=1)
+
+    if not end_date:
+        end_date = datetime.now()
+
+    return jsonify(purchase_service.get_spent_by_period_grouped_by_product_type(start_date, end_date))
+
