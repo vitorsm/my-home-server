@@ -1,9 +1,10 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from my_home_server.dao.purchase_dao import PurchaseDAO
 from my_home_server.exceptions.error_code import ErrorCode
 from my_home_server.exceptions.object_not_found_exception import ObjectNotFoundException
+from my_home_server.mappers.product_type_mapper import ProductTypeMapper
 
 from my_home_server.mappers.purchase_mapper import PurchaseMapper
 from my_home_server.models.purchase import Purchase
@@ -16,11 +17,13 @@ from my_home_server.utils.sql_utils import transaction
 
 class PurchaseService(object):
     def __init__(self, purchase_dao: PurchaseDAO, purchase_list_service: PurchaseListService,
-                 product_service: ProductService, purchase_mapper: PurchaseMapper):
+                 product_service: ProductService, purchase_mapper: PurchaseMapper,
+                 product_type_mapper: ProductTypeMapper):
         self.purchase_dao = purchase_dao
         self.purchase_list_service = purchase_list_service
         self.product_service = product_service
         self.mapper = purchase_mapper
+        self.product_type_mapper = product_type_mapper
 
     def find_by_id(self, purchase_id: int) -> Optional[Purchase]:
         return self.purchase_dao.find_by_id(purchase_id, AuthenticationContext.get_current_user())
@@ -87,5 +90,67 @@ class PurchaseService(object):
         for purchase_product in purchase.products:
             ProductService.fill_to_create(purchase_product.product, created_at, created_by)
 
+        purchase.fill_total_value()
+
+    def find_purchase_by_period(self, start_date: datetime, end_date: datetime) -> List[Purchase]:
+        return self.purchase_dao.find_by_period(start_date, end_date, AuthenticationContext.get_current_user())
+
+    @staticmethod
+    def group_purchases_by_month(purchases: List[Purchase]) -> Optional[Dict[float, List[Purchase]]]:
+        if not purchases or not len(purchases):
+            return None
+
+        grouped = dict()
+        for purchase in purchases:
+            timestamp = purchase.created_at.timestamp()
+            exists_key = next((key_timestamp for key_timestamp in grouped.keys()
+                              if datetime.fromtimestamp(key_timestamp).year == purchase.created_at.year and
+                              datetime.fromtimestamp(key_timestamp).month == purchase.created_at.month), None)
+
+            if exists_key:
+                grouped[exists_key].append(purchase)
+            else:
+                grouped[timestamp] = [purchase]
+
+        return grouped
+
     def commit(self):
         self.purchase_dao.commit()
+
+    def get_monthly_spent_by_period(self, start_date: datetime, end_date: datetime) -> List[dict]:
+        purchases = self.find_purchase_by_period(start_date, end_date)
+        if not purchases or not len(purchases):
+            return list()
+        grouped_purchases = self.group_purchases_by_month(purchases)
+
+        monthly_list = list()
+
+        for timestamp, purchases in grouped_purchases.items():
+            date = datetime.fromtimestamp(timestamp)
+            monthly_list.append({
+                "year": date.year,
+                "month": date.month,
+                "value": sum(purchase.total_value for purchase in purchases)
+            })
+
+        return monthly_list
+
+    def get_spent_by_period_grouped_by_product_type(self, start_date: datetime, end_date: datetime) -> List[dict]:
+        purchases = self.find_purchase_by_period(start_date, end_date)
+
+        product_type_values = list()
+
+        for purchase in purchases:
+            product_type_values = purchase.get_product_type_and_values(initial_product_type_values=product_type_values)
+
+        for product_type_value in product_type_values:
+            self.__convert_product_type_value_to_dto(product_type_value)
+
+        return product_type_values
+
+    def __convert_product_type_value_to_dto(self, product_type_value: dict):
+        if product_type_value.get("children") and len(product_type_value.get("children")):
+            for child_value in product_type_value.get("children"):
+                self.__convert_product_type_value_to_dto(child_value)
+
+        product_type_value["product_type"] = self.product_type_mapper.to_dto(product_type_value["product_type"])

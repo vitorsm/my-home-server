@@ -20,11 +20,24 @@ class ProductType(Base):
 
     created_by = relationship("User", lazy="select")
 
-    def __init__(self):
-        print(self)
-
     def __eq__(self, other):
         return type(other) == ProductType and self.id == other.id
 
     def __hash__(self):
         return hash(self.id)
+
+    def is_root(self):
+        return not self.parent_product_type
+
+    def get_root_product_type(self, before_product_type=None, product_type=None):
+        if not product_type:
+            product_type = self
+            if not product_type.parent_product_type or product_type.parent_product_type == before_product_type:
+                return None
+
+        if not product_type.parent_product_type:
+            return product_type if before_product_type != product_type else None
+        elif product_type.parent_product_type == before_product_type:
+            return product_type
+        else:
+            return self.get_root_product_type(before_product_type, product_type.parent_product_type)

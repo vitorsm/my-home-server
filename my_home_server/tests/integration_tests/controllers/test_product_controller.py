@@ -29,7 +29,7 @@ class TestProductController(BaseTest):
         response_dto = json.loads(response.data.decode())
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(14, len(response_dto))
+        self.assertEqual(19, len(response_dto))
         self.assertEqual(1, response_dto[0]["id"])
         self.assertEqual("Product 1", response_dto[0]["name"])
         self.assertEqual(True, response_dto[0]["is_private"])

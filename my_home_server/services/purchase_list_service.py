@@ -81,5 +81,7 @@ class PurchaseListService(object):
         for purchase_product in purchase_list.purchase_products:
             ProductService.fill_to_create(purchase_product.product, created_at, created_by)
 
+        purchase_list.fill_total_estimated_value()
+
     def commit(self):
         self.purchase_list_dao.commit()

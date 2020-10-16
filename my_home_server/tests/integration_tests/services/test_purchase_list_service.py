@@ -25,6 +25,7 @@ class TestPurchaseListService(BaseTest):
         self.assertEqual(1, purchase_list.id)
         self.assertEqual("List 1", purchase_list.name)
         self.assertEqual(2, len(purchase_list.purchase_products))
+        self.assertEqual(12, purchase_list.total_estimated_value)
 
     def test_create_from_dto(self):
         dto = {
@@ -58,6 +59,7 @@ class TestPurchaseListService(BaseTest):
         self.assertEqual("new_name2", purchase_list.purchase_products[1].product.name)
         self.assertEqual("new_product_type2", purchase_list.purchase_products[1].product.product_type.name)
         self.assertEqual(2, purchase_list.purchase_products[1].quantity)
+        self.assertEqual(48.8, purchase_list.total_estimated_value)
 
     def test_create_from_dto_without_name(self):
         dto = {
@@ -175,6 +177,7 @@ class TestPurchaseListService(BaseTest):
         self.assertEqual(12.1, purchase_list.purchase_products[1].estimated_value)
         self.assertEqual(1, purchase_list.purchase_products[0].quantity)
         self.assertEqual(2, purchase_list.purchase_products[1].quantity)
+        self.assertEqual(36.4, purchase_list.total_estimated_value)
 
     def test_update_from_dto_without_permission(self):
         dto = {

@@ -22,7 +22,7 @@ class TestProductService(BaseTest):
         AuthenticationContext.init_context(self.db.session.query(User).get(6))
         products = self.service.find_all()
 
-        self.assertEqual(11, len(products))
+        self.assertEqual(14, len(products))
 
     def test_find_product_by_id(self):
         product = self.service.find_by_id(1)

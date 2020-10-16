@@ -85,11 +85,9 @@ class PurchaseListMapper(MapperInterface):
                 purchase_product = PurchaseListProduct()
                 purchase_product.product = self.product_mapper.to_object(dto, not_update=True)
                 purchase_product.purchase_list = purchase_list
-                purchase_list.purchase_products.append(purchase_product)
 
             purchase_product.quantity = dto.get("quantity")
             purchase_product.estimated_value = dto.get("value")
-
 
     def __products_to_dto(self, purchase_products: List[PurchaseListProduct]) -> List[dict]:
         products = list()
