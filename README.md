@@ -5,6 +5,7 @@ Python restful server of MyHome project.
 It is a Flask application and use SQLAlchemy as a ORM.
 
 [![codecov](https://codecov.io/gh/vitorsm/my-home-server/branch/master/graph/badge.svg)](https://codecov.io/gh/vitorsm/my-home-server)
+https://img.shields.io/github/workflow/status/vitorsm/my-home-server/Releases
 
 The porpuse of this project is to provide functions to create a shopping list and registered all products bought in shopping and provide reports about spend money and more bought products.
 
