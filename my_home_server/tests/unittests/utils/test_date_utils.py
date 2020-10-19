@@ -41,3 +41,9 @@ class TestDateUtils(unittest.TestCase):
         result = date_utils.from_str_to_date("2020-10-14T09:35:18.707261")
 
         self.assertEqual(expected_date, result)
+
+    def test_convert_date_without_and_microseconds_and_tz(self):
+        expected_date = datetime(2020, 4, 1, 23, 47, 41, 414)
+        result = date_utils.from_str_to_date("2020-04-01T23:47:41.414Z")
+
+        self.assertEqual(expected_date, result)

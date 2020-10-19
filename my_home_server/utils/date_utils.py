@@ -19,6 +19,9 @@ def from_str_to_date(date_str: str) -> Optional[datetime]:
     microseconds = None
     if '.' in date_str:
         microseconds_str = date_str.split('.')[1]
+        if microseconds_str and not microseconds_str[-1].isnumeric():
+            microseconds_str = microseconds_str[:-1]
+
         microseconds = int(microseconds_str)
         date_str = date_str.split('.')[0]
 
