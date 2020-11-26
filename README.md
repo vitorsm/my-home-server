@@ -4,6 +4,7 @@ Python restful server of MyHome project.
 
 It is a Flask application and use SQLAlchemy as a ORM.
 
+
 [![codecov](https://codecov.io/gh/vitorsm/my-home-server/branch/master/graph/badge.svg)](https://codecov.io/gh/vitorsm/my-home-server)
 ![build](https://img.shields.io/github/workflow/status/vitorsm/my-home-server/Releases)
 
