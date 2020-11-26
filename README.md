@@ -6,6 +6,7 @@ It is a Flask application and use SQLAlchemy as a ORM.
 
 [![codecov](https://codecov.io/gh/vitorsm/my-home-server/branch/master/graph/badge.svg)](https://codecov.io/gh/vitorsm/my-home-server)
 ![build](https://img.shields.io/github/workflow/status/vitorsm/my-home-server/Releases)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fvitorsm%2Fmy-home-server.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fvitorsm%2Fmy-home-server?ref=badge_shield)
 
 
 The porpuse of this project is to provide functions to create a shopping list and registered all products bought in shopping and provide reports about spend money and more bought products.
@@ -232,3 +233,7 @@ The controller will be a variable in this file instead a class.
    
    Register the controller in ```configs.controllers_register```
    
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fvitorsm%2Fmy-home-server.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fvitorsm%2Fmy-home-server?ref=badge_large)
