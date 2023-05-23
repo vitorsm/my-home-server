@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt import JWT
 
 from flask_injector import FlaskInjector
@@ -15,6 +16,8 @@ import my_home_server.configs.controllers_register as controllers_register
 from my_home_server.services.user_service import UserService
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
 app.config['SQLALCHEMY_DATABASE_URI'] = config.DB_CONNECTION_STR
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = config.ENCRYPT_SECRET_KEY
